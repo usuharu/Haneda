@@ -54,7 +54,7 @@ def fetch_and_generate_html():
 # generate_flights.py の修正（fetch_and_generate_html 関数内）
 
     try:
-        response = requests.get(BASE_URL + endpoint, headers=headers, params=params)
+        response = requests.get(BASE_URL + endpoint, headers=headers, params=params, timeout=10)
         
         # ★★★ ここからデバッグ出力とエラー処理を再強化 ★★★
         
@@ -75,10 +75,15 @@ def fetch_and_generate_html():
         # ... (以下、フライトデータを処理する既存のコードを続行)
         
     except requests.exceptions.RequestException as e:
-        # ネットワーク接続やその他のリクエストエラーの場合
-        print(f"致命的なリクエストエラー: {e}")
-        generate_error_html("リクエスト/接続エラー", str(e))
-
+        # タイムアウトやその他のリクエストエラーの場合
+        import traceback
+        error_trace = traceback.format_exc() # トレースバック全体を取得
+        print(f"致命的なリクエストエラーが発生しました: {e}")
+        print("----- FULL TRACEBACK -----")
+        print(error_trace)
+        print("--------------------------")
+        generate_error_html("リクエスト/接続エラー", str(e) + "\n\n" + error_trace)
+        return
     except Exception as e:
         # 予期せぬエラー（JSONDecodeErrorなど）の場合
         print(f"予期せぬエラー: {e}")
