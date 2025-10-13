@@ -287,7 +287,7 @@ def fetch_and_generate_html():
                     mapped_names = CITY_MAPPING.get(base_en, {"ja": base_en, "zh": base_en})
 
                     destination_ja = mapped_names['ja'] + iata_suffix
-                    destination_en = base_en + iata_suffix
+                    destination_en = mapped_names['en'] + iata_suffix
                     destination_zh = mapped_names['zh'] + iata_suffix
 
                     # 5. ステータスの処理
