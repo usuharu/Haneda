@@ -113,10 +113,25 @@ def generate_html_file(flights):
             """
             
     # HTML全体を構築
+    # 修正後
     html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>羽田空港 出発便掲示板</title
+    <title>羽田空港 出発便掲示板</title>
+    <style>
+        body {{ font-family: sans-serif; margin: 20px; background-color: #f0f0f0; }}
+        .board-container {{ background-color: #333; color: white; padding: 20px; border-radius: 8px; max-width: 800px; margin: 0 auto; }}
+        h1 {{ text-align: center; color: #fff; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+        th, td {{ padding: 12px; border-bottom: 1px solid #555; text-align: left; }}
+        th {{ background-color: #555; }}
+        .status-delayed {{ color: orange; font-weight: bold; }}
+        .status-canceled {{ color: red; font-weight: bold; }}
+        .update-info {{ font-size: 0.9em; text-align: right; color: #ccc; margin-bottom: 10px; }}
+    </style>
+    <meta http-equiv="refresh" content="300"> </head>
+<body>
+"""
