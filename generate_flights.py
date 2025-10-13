@@ -131,6 +131,17 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
         td:nth-child(3) {{ width: 10%; }}
         td:nth-child(4) {{ width: 10%; }}
         th:nth-child(5), td:nth-child(5) {{ width: 30%; }} /* コードシェア列の幅 */
+        .codeshare-cell { font-size: 0.9em; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        /* ★★★ 変更: 便名列の幅を広げました（ロゴが入るため） ★★★ */
+        th:nth-child(1), td:nth-child(1) { width: 15%; } 
+        td:nth-child(3) { width: 10%; }
+        td:nth-child(4) { width: 10%; }
+        th:nth-child(5), td:nth-child(5) { width: 30%; }
+
+        /* ★★★ 追加: ロゴと便名を横並びにするCSS ★★★ */
+        .flight-cell { display: flex; align-items: center; gap: 8px; }
+        .airline-logo { width: 24px; height: 24px; border-radius: 4px; object-fit: contain; }
     </style>
     <meta http-equiv="refresh" content="300"> 
 </head>
