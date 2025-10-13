@@ -43,7 +43,25 @@ CITY_MAPPING = {
     "Ishigaki": {"ja": "石垣","en": "Ishigaki","zh": "石垣"},
     "Chitose": {"ja": "札幌（新千歳）","en": "Sapporo","zh": "札幌"},
     "Aomori": {"ja": "青森","en": "Aomori","zh": "青森"},
-    
+    "Komatsu": {"ja": "小松","en": "Komatsu","zh": "小松"},
+    "Kansai International": {"ja": "大阪（関西）","en": "Osaka(KIX)","zh": "大阪（关西）"},
+    "Kobe": {"ja": "神戸","en": "Kobe","zh": "神户"},
+    "Tokushima": {"ja": "徳島","en": "Tokushima","zh": "德岛"},
+    #以下国際線
+    "Seoul": {"ja": "ソウル(仁川)","en": "Seoul(Incheon)","zh": "首尔(ICN)"},
+    "Gimpo Airport": {"ja": "ソウル(金浦)","en": "Seoul(Gimpo)","zh": "首尔(GMP)"},
+    "Franz Josef Strauss": {"ja": "ミュンヘン","en": "Munich","zh": "慕尼黑"},
+    "Ninoy Aquino International": {"ja": "マニラ","en": "Manila","zh": "马尼拉"},
+    "Detroit Metropolitan Wayne County": {"ja": "デトロイト","en": "Detroit","zh": "底特律"},
+    "Guangzhou Baiyun International": {"ja": "広州","en": "Guangzhou","zh": "广州"},
+    "Washington Dulles International": {"ja": "ワシントン","en": "Washington","zh": "华盛顿"},
+    "Sydney Kingsford Smith Airport": {"ja": "シドニー","en": "Sydney","zh": "悉尼"},
+    "Suvarnabhumi International": {"ja": "バンコク","en": "Bangkok","zh": "曼谷"},
+    "Tianjin Binhai International": {"ja": "天津","en": "Tianjin","zh": "天津"},
+    "Tan Son Nhat International": {"ja": "ホーチミンシティ","en": "Ho Chi Minh City","zh": "胡志明市"},
+    "Shanghai Pudong International": {"ja": "上海（浦東）","en": "Shanghai(PVG)","zh": "上海（浦东）"},
+    "Franz Josef Strauss": {"ja": "ミュンヘン","en": "Munich","zh": "慕尼黑"},
+    "Frankfurt International Airport": {"ja": "フランクフルト","en": "Frankfurt","zh": "法兰克福"},
     # マッピングにない場合は英語名をそのまま使用
 }
 # ----------------
