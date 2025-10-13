@@ -86,11 +86,15 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
                 status_class = "status-delayed"
             elif flight['status'] == '欠航':
                 status_class = "status-canceled"
-
+                
+            logo_url = f"logos/{flight['airline_code']}.png"
             # 3言語のデータを td タグの data属性として埋め込む
             table_rows += f"""
                 <tr>
-                    <td>{flight['flight_number']}</td>
+                    <td class="flight-cell">
+                        <img src="{logo_url}" alt="{flight['airline_code']} Logo" class="airline-logo">
+                        <span>{flight['flight_number']}</span>
+                    </td>
                     <td class="destination-cell" 
                         data-ja="{flight['destination_ja']}"
                         data-en="{flight['destination_en']}"
@@ -354,6 +358,7 @@ def fetch_and_generate_html():
             final_flights_data.append({
                 'sort_key': flight_data['sort_key'],
                 'flight_number': flight_data['flight_number'],
+                'airline_code': flight_data['flight_number'][:2],
                 'destination_ja': flight_data['destination_ja'],
                 'destination_en': flight_data['destination_en'],
                 'destination_zh': flight_data['destination_zh'],
@@ -361,6 +366,7 @@ def fetch_and_generate_html():
                 'codeshare_flights': ', '.join(sorted(codeshare_list)),
                 'status': flight_data['status']
             })
+        
 
         # 時系列でのソート
         final_flights_data.sort(key=lambda x: x['sort_key']) 
