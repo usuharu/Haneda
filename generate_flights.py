@@ -51,6 +51,13 @@ def fetch_and_generate_html():
 
     try:
         response = requests.get(BASE_URL + endpoint, headers=headers, params=params)
+        
+        # ★★★ 新規追加：デバッグ用出力 ★★★
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] APIレスポンスステータスコード: {response.status_code}")
+        if response.status_code != 200:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] APIレスポンス本文 (非200): {response.text}")
+        # ★★★ -------------------- ★★★
+        
         response.raise_for_status() # HTTPエラーが発生した場合に例外を発生させる
         data = response.json()
         
