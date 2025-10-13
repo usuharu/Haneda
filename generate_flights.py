@@ -51,57 +51,38 @@ def fetch_and_generate_html():
 
     print(f"[{datetime.now().strftime('%H:%M:%S')}] APIリクエスト開始: {BASE_URL + endpoint}...")
 
+# generate_flights.py の修正（fetch_and_generate_html 関数内）
+
     try:
         response = requests.get(BASE_URL + endpoint, headers=headers, params=params)
         
-        # ★★★ 新規追加：デバッグ用出力 ★★★
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] APIレスポンスステータスコード: {response.status_code}")
-        if response.status_code != 200:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] APIレスポンス本文 (非200): {response.text}")
-        # ★★★ -------------------- ★★★
+        # ★★★ ここからデバッグ出力とエラー処理を再強化 ★★★
         
-        response.raise_for_status() # HTTPエラーが発生した場合に例外を発生させる
+        print(f"[{datetime.now(JST).strftime('%H:%M:%S')}] APIレスポンスステータスコード: {response.status_code}")
+        
+        if response.status_code != 200:
+            # 200以外のステータスコードの場合、本文をログに出力
+            print(f"[{datetime.now(JST).strftime('%H:%M:%S')}] APIレスポンス本文 (非200): {response.text}")
+            
+            # APIがJSON以外のエラーを返した場合でも、HTMLファイルを生成する
+            error_details = response.text 
+            generate_error_html(f"APIエラー: HTTP {response.status_code}", error_details)
+            return # エラー処理後、処理を終了
+
+        # ステータスコードが200の場合、JSONを処理
         data = response.json()
         
-        flights_data = []
-        for flight in data.get('departures', []):
-            try:
-                # 時刻の変換
-                scheduled_time_utc = datetime.fromisoformat(flight['scheduled_out'].replace('Z', '+00:00'))
-                scheduled_time_jst = scheduled_time_utc.astimezone(JST).strftime('%H:%M')
-
-                # データ整形
-                status = flight.get('status', '情報なし')
-                destination = flight['destination']['name']
-                flight_number = flight.get('ident', 'N/A')
-
-                flights_data.append({
-                    'flight_number': flight_number,
-                    'destination': destination,
-                    'scheduled_time': scheduled_time_jst,
-                    'status': status
-                })
-            except Exception as e:
-                print(f"フライトデータの処理中にエラーが発生しました: {e}. スキップします。")
-                continue
-
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] {len(flights_data)}件のフライト情報を取得しました。")
-        generate_html_file(flights_data)
-
-    except requests.exceptions.HTTPError as e:
-        status_code = e.response.status_code
-        try:
-            error_details = e.response.json()
-        except:
-            error_details = {"message": e.response.text}
+        # ... (以下、フライトデータを処理する既存のコードを続行)
         
-        print(f"AeroAPI HTTPエラー: ステータスコード {status_code}")
-        print(f"詳細: {error_details}")
-        generate_error_html(f"APIエラー: HTTP {status_code}", error_details)
-
     except requests.exceptions.RequestException as e:
-        print(f"ネットワークエラー: {e}")
-        generate_error_html("ネットワークエラー", str(e))
+        # ネットワーク接続やその他のリクエストエラーの場合
+        print(f"致命的なリクエストエラー: {e}")
+        generate_error_html("リクエスト/接続エラー", str(e))
+
+    except Exception as e:
+        # 予期せぬエラー（JSONDecodeErrorなど）の場合
+        print(f"予期せぬエラー: {e}")
+        generate_error_html("予期せぬスクリプトエラー", str(e))
 
 
 def generate_html_file(flights):
