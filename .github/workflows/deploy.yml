@@ -31,11 +31,10 @@ jobs:
           AEROAPI_KEY: ${{ secrets.AEROAPI_KEY }}
     # ... (後略)
           
+      # 修正後
       # ★★★ 生成されたファイルをGitHub Pagesにデプロイ ★★★
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./output_dir # HTMLファイルが出力されるディレクトリ
-          
-# (secrets.AEROAPI_KEYはGitHubリポジトリの設定で事前に登録が必要です)
+          publish_dir: . # リポジトリのルート（`index.html`が生成された場所）を指定
