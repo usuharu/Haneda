@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>羽田空港 出発便掲示板</title>
+    <style>
+        /* 簡単なCSSで掲示板風に */
+        body { font-family: sans-serif; margin: 20px; background-color: #f0f0f0; }
+        .board-container { background-color: #333; color: white; padding: 20px; border-radius: 8px; }
+        h1 { text-align: center; color: #fff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #555; text-align: left; }
+        th { background-color: #555; }
+        .status-delayed { color: orange; font-weight: bold; }
+        .status-canceled { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="board-container">
+    <h1>羽田空港 (HND/RJTT) 出発便</h1>
+    <p id="last-updated">最終更新: --</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>便名</th>
+                <th>行先</th>
+                <th>予定時刻</th>
+                <th>ステータス</th>
+            </tr>
+        </thead>
+        <tbody id="flights-table-body">
+            </tbody>
+    </table>
+    
+    <p id="error-message" style="color: red;"></p>
+</div>
+
+<script>
+    async function fetchFlights() {
+        const tbody = document.getElementById('flights-table-body');
+        const updateTime = document.getElementById('last-updated');
+        const errorMsg = document.getElementById('error-message');
+        
+        tbody.innerHTML = '<tr><td colspan="4">データを取得中です...</td></tr>';
+        errorMsg.textContent = '';
+        
+        try {
+            // FlaskサーバーのAPIエンドポイントにリクエスト
+            const response = await fetch('/api/departures');
+            const data = await response.json();
+
+            if (data.error) {
+                errorMsg.textContent = `エラー: ${data.error} ${data.details || ''}`;
+                tbody.innerHTML = '<tr><td colspan="4">フライト情報の取得に失敗しました。</td></tr>';
+                return;
+            }
+
+            // テーブルをクリアして新しいデータで埋める
+            tbody.innerHTML = '';
+            data.flights.forEach(flight => {
+                const row = tbody.insertRow();
+                
+                // ステータスに応じてCSSクラスを適用
+                let statusClass = '';
+                if (flight.status.includes('Delayed')) {
+                    statusClass = 'status-delayed';
+                } else if (flight.status.includes('Canceled')) {
+                    statusClass = 'status-canceled';
+                }
+
+                row.innerHTML = `
+                    <td>${flight.flight_number || 'N/A'}</td>
+                    <td>${flight.destination || 'N/A'}</td>
+                    <td>${flight.scheduled_time || 'N/A'}</td>
+                    <td class="${statusClass}">${flight.status || 'N/A'}</td>
+                `;
+            });
+
+            // 最終更新時刻を更新
+            const now = new Date();
+            updateTime.textContent = `最終更新: ${now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+
+        } catch (error) {
+            console.error('Fetching flight data failed:', error);
+            errorMsg.textContent = 'ネットワークエラー、またはサーバー接続エラー。';
+            tbody.innerHTML = '<tr><td colspan="4">情報の取得に失敗しました。</td></tr>';
+        }
+    }
+
+    // ページロード時に一度実行
+    fetchFlights();
+    
+    // リアルタイム更新のために、60秒ごとにfetchFlights関数を実行
+    setInterval(fetchFlights, 60000); // 60000ミリ秒 = 1分
+</script>
+
+</body>
+</html>
