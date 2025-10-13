@@ -1,3 +1,5 @@
+# generate_flights.py の一番先頭に追加
+print("--- SCRIPT STARTED SUCCESSFULLY ---")
 import os
 import requests
 import json
