@@ -24,10 +24,12 @@ jobs:
         run: pip install requests pandas  # 必要なライブラリをインストール
         
       # ★★★ ここで修正したPythonスクリプトを実行し、HTML/JSONファイルを生成 ★★★
+    # ... (前略)
       - name: Run data generator script
-        run: python generate_flights.py
+        run: python generate_flights.py # ← この行が生成スクリプトの実行です
         env:
           AEROAPI_KEY: ${{ secrets.AEROAPI_KEY }}
+    # ... (後略)
           
       # ★★★ 生成されたファイルをGitHub Pagesにデプロイ ★★★
       - name: Deploy to GitHub Pages
