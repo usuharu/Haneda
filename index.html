@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽田空港 出発便掲示板</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f0f0f0; }
+        .board-container { background-color: #333; color: white; padding: 20px; border-radius: 8px; max-width: 1000px; margin: 0 auto; } /* 最大幅を広く */
+        h1 { text-align: center; color: #fff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #555; text-align: left; }
+        th { background-color: #555; }
+        .status-delayed { color: orange; font-weight: bold; }
+        .status-canceled { color: red; font-weight: bold; }
+        .update-info { font-size: 0.9em; text-align: right; color: #ccc; margin-bottom: 10px; }
+        .codeshare-cell { font-size: 0.9em; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } /* コードシェア列のスタイル */
+        /* 便名と時刻の幅を固定して見やすく */
+        td:nth-child(1) { width: 10%; } 
+        td:nth-child(3) { width: 10%; }
+        td:nth-child(4) { width: 10%; }
+        th:nth-child(5), td:nth-child(5) { width: 30%; } /* コードシェア列の幅 */
+    </style>
+    <meta http-equiv="refresh" content="300"> 
+</head>
+<body>
+
+<div class="board-container">
+    <h1>羽田空港 (HND/RJTT) 出発便</h1>
+    <p class="update-info">最終生成時刻: 2025/10/13 22:20:03 JST</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>便名</th>
+                <th>行先</th>
+                <th>予定時刻</th>
+                <th>ステータス</th>
+                <th>コードシェア便名</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                <tr>
+                    <td>JL641</td>
+                    <td class="destination-cell" 
+                        data-ja="Kagoshima"
+                        data-en="Kagoshima"
+                        data-zh="Kagoshima">
+                        Kagoshima
+                    </td>
+                    <td>15:25</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL901</td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td>15:30</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL501</td>
+                    <td class="destination-cell" 
+                        data-ja="Chitose"
+                        data-en="Chitose"
+                        data-zh="Chitose">
+                        Chitose
+                    </td>
+                    <td>15:35</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL141</td>
+                    <td class="destination-cell" 
+                        data-ja="Aomori"
+                        data-en="Aomori"
+                        data-zh="Aomori">
+                        Aomori
+                    </td>
+                    <td>15:45</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL971</td>
+                    <td class="destination-cell" 
+                        data-ja="Ishigaki"
+                        data-en="Ishigaki"
+                        data-zh="Ishigaki">
+                        Ishigaki
+                    </td>
+                    <td>15:45</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>AF187</td>
+                    <td class="destination-cell" 
+                        data-ja="Charles De Gaulle"
+                        data-en="Charles De Gaulle"
+                        data-zh="Charles De Gaulle">
+                        Charles De Gaulle
+                    </td>
+                    <td>17:50</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>NH633</td>
+                    <td class="destination-cell" 
+                        data-ja="N/A"
+                        data-en="N/A"
+                        data-zh="N/A">
+                        N/A
+                    </td>
+                    <td>18:10</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">SQ5963</td>
+                </tr>
+            
+                <tr>
+                    <td>7G75</td>
+                    <td class="destination-cell" 
+                        data-ja="Kita Kyushu"
+                        data-en="Kita Kyushu"
+                        data-zh="Kita Kyushu">
+                        Kita Kyushu
+                    </td>
+                    <td>18:10</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">NH3875</td>
+                </tr>
+            
+                <tr>
+                    <td>NU185</td>
+                    <td class="destination-cell" 
+                        data-ja="Komatsu"
+                        data-en="Komatsu"
+                        data-zh="Komatsu">
+                        Komatsu
+                    </td>
+                    <td>18:15</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AF5493, BA3438, HA5069, PG4192</td>
+                </tr>
+            
+                <tr>
+                    <td>JL493</td>
+                    <td class="destination-cell" 
+                        data-ja="Kochi"
+                        data-en="Kochi"
+                        data-zh="Kochi">
+                        Kochi
+                    </td>
+                    <td>18:20</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">HA5222</td>
+                </tr>
+            
+                <tr>
+                    <td>NH675</td>
+                    <td class="destination-cell" 
+                        data-ja="Hiroshima Airport"
+                        data-en="Hiroshima Airport"
+                        data-zh="Hiroshima Airport">
+                        Hiroshima Airport
+                    </td>
+                    <td>18:25</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">LH4860</td>
+                </tr>
+            
+                <tr>
+                    <td>LH715</td>
+                    <td class="destination-cell" 
+                        data-ja="Franz Josef Strauss"
+                        data-en="Franz Josef Strauss"
+                        data-zh="Franz Josef Strauss">
+                        Franz Josef Strauss
+                    </td>
+                    <td>18:30</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">NH5851</td>
+                </tr>
+            
+                <tr>
+                    <td>NH215</td>
+                    <td class="destination-cell" 
+                        data-ja="Charles De Gaulle"
+                        data-en="Charles De Gaulle"
+                        data-zh="Charles De Gaulle">
+                        Charles De Gaulle
+                    </td>
+                    <td>18:35</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>LH4919</td>
+                    <td class="destination-cell" 
+                        data-ja="Frankfurt International Airport"
+                        data-en="Frankfurt International Airport"
+                        data-zh="Frankfurt International Airport">
+                        Frankfurt International Airport
+                    </td>
+                    <td>18:40</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">NH223</td>
+                </tr>
+            
+                <tr>
+                    <td>JL233</td>
+                    <td class="destination-cell" 
+                        data-ja="Okayama"
+                        data-en="Okayama"
+                        data-zh="Okayama">
+                        Okayama
+                    </td>
+                    <td>19:20</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL45</td>
+                    <td class="destination-cell" 
+                        data-ja="Charles De Gaulle"
+                        data-en="Charles De Gaulle"
+                        data-zh="Charles De Gaulle">
+                        Charles De Gaulle
+                    </td>
+                    <td>19:20</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL155</td>
+                    <td class="destination-cell" 
+                        data-ja="Misawa"
+                        data-en="Misawa"
+                        data-zh="Misawa">
+                        Misawa
+                    </td>
+                    <td>19:25</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">CI8435</td>
+                </tr>
+            
+                <tr>
+                    <td>AI357</td>
+                    <td class="destination-cell" 
+                        data-ja="Indira Gandhi International"
+                        data-en="Indira Gandhi International"
+                        data-zh="Indira Gandhi International">
+                        Indira Gandhi International
+                    </td>
+                    <td>20:50</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL259</td>
+                    <td class="destination-cell" 
+                        data-ja="Hiroshima Airport"
+                        data-en="Hiroshima Airport"
+                        data-zh="Hiroshima Airport">
+                        Hiroshima Airport
+                    </td>
+                    <td>21:05</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AF5481, AS7467, GA9330</td>
+                </tr>
+            
+                <tr>
+                    <td>JL165</td>
+                    <td class="destination-cell" 
+                        data-ja="Akita"
+                        data-en="Akita"
+                        data-zh="Akita">
+                        Akita
+                    </td>
+                    <td>00:00</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>NH31</td>
+                    <td class="destination-cell" 
+                        data-ja="Itami"
+                        data-en="Itami"
+                        data-zh="Itami">
+                        Itami
+                    </td>
+                    <td>00:00</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>NH1083</td>
+                    <td class="destination-cell" 
+                        data-ja="Nagasaki"
+                        data-en="Nagasaki"
+                        data-zh="Nagasaki">
+                        Nagasaki
+                    </td>
+                    <td>00:05</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AZ2809, LH4874</td>
+                </tr>
+            
+                <tr>
+                    <td>PR421</td>
+                    <td class="destination-cell" 
+                        data-ja="Ninoy Aquino International"
+                        data-en="Ninoy Aquino International"
+                        data-zh="Ninoy Aquino International">
+                        Ninoy Aquino International
+                    </td>
+                    <td>00:05</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AA8344, NH5333</td>
+                </tr>
+            
+                <tr>
+                    <td>DL274</td>
+                    <td class="destination-cell" 
+                        data-ja="Detroit Metropolitan Wayne County"
+                        data-en="Detroit Metropolitan Wayne County"
+                        data-zh="Detroit Metropolitan Wayne County">
+                        Detroit Metropolitan Wayne County
+                    </td>
+                    <td>00:15</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">VN3022</td>
+                </tr>
+            
+                <tr>
+                    <td>7G83</td>
+                    <td class="destination-cell" 
+                        data-ja="Kita Kyushu"
+                        data-en="Kita Kyushu"
+                        data-zh="Kita Kyushu">
+                        Kita Kyushu
+                    </td>
+                    <td>00:25</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">NH3883</td>
+                </tr>
+            
+                <tr>
+                    <td>NH697</td>
+                    <td class="destination-cell" 
+                        data-ja="Ube"
+                        data-en="Ube"
+                        data-zh="Ube">
+                        Ube
+                    </td>
+                    <td>00:30</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">LH4916</td>
+                </tr>
+            
+                <tr>
+                    <td>BC109</td>
+                    <td class="destination-cell" 
+                        data-ja="Kobe"
+                        data-en="Kobe"
+                        data-zh="Kobe">
+                        Kobe
+                    </td>
+                    <td>00:35</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL93</td>
+                    <td class="destination-cell" 
+                        data-ja="Gimpo Airport"
+                        data-en="Gimpo Airport"
+                        data-zh="Gimpo Airport">
+                        Gimpo Airport
+                    </td>
+                    <td>00:40</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>UA804</td>
+                    <td class="destination-cell" 
+                        data-ja="Washington Dulles International"
+                        data-en="Washington Dulles International"
+                        data-zh="Washington Dulles International">
+                        Washington Dulles International
+                    </td>
+                    <td>00:45</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">NH7028</td>
+                </tr>
+            
+                <tr>
+                    <td>JL921</td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td>00:55</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL95</td>
+                    <td class="destination-cell" 
+                        data-ja="Gimpo Airport"
+                        data-en="Gimpo Airport"
+                        data-zh="Gimpo Airport">
+                        Gimpo Airport
+                    </td>
+                    <td>04:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL615</td>
+                    <td class="destination-cell" 
+                        data-ja="Nagasaki"
+                        data-en="Nagasaki"
+                        data-zh="Nagasaki">
+                        Nagasaki
+                    </td>
+                    <td>04:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>AS7459</td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td>04:30</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">BA3447, HA5167, JL335, TN1812</td>
+                </tr>
+            
+                <tr>
+                    <td>JL51</td>
+                    <td class="destination-cell" 
+                        data-ja="Sydney Kingsford Smith Airport"
+                        data-en="Sydney Kingsford Smith Airport"
+                        data-zh="Sydney Kingsford Smith Airport">
+                        Sydney Kingsford Smith Airport
+                    </td>
+                    <td>04:40</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">LA7467</td>
+                </tr>
+            
+                <tr>
+                    <td>UA38</td>
+                    <td class="destination-cell" 
+                        data-ja="Los Angeles International"
+                        data-en="Los Angeles International"
+                        data-zh="Los Angeles International">
+                        Los Angeles International
+                    </td>
+                    <td>04:45</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AA26, AS6926, JL7018</td>
+                </tr>
+            
+                <tr>
+                    <td>JL151</td>
+                    <td class="destination-cell" 
+                        data-ja="Aomori"
+                        data-en="Aomori"
+                        data-zh="Aomori">
+                        Aomori
+                    </td>
+                    <td>04:45</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL209</td>
+                    <td class="destination-cell" 
+                        data-ja="Chu-Bu Centrair International (Central Japan International)"
+                        data-en="Chu-Bu Centrair International (Central Japan International)"
+                        data-zh="Chu-Bu Centrair International (Central Japan International)">
+                        Chu-Bu Centrair International (Central Japan International)
+                    </td>
+                    <td>04:55</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">AA8483, AF3381, AS7551, AY5287, BA4613, GA9168, HA5081, LA7469, PG4198</td>
+                </tr>
+            
+                <tr>
+                    <td>JL5604</td>
+                    <td class="destination-cell" 
+                        data-ja="Shanghai Pudong International"
+                        data-en="Shanghai Pudong International"
+                        data-zh="Shanghai Pudong International">
+                        Shanghai Pudong International
+                    </td>
+                    <td>05:00</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell">MU540</td>
+                </tr>
+            
+                <tr>
+                    <td>NH639</td>
+                    <td class="destination-cell" 
+                        data-ja="N/A"
+                        data-en="N/A"
+                        data-zh="N/A">
+                        N/A
+                    </td>
+                    <td>05:00</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>BC117</td>
+                    <td class="destination-cell" 
+                        data-ja="Kobe"
+                        data-en="Kobe"
+                        data-zh="Kobe">
+                        Kobe
+                    </td>
+                    <td>05:05</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>NH97</td>
+                    <td class="destination-cell" 
+                        data-ja="Kansai International"
+                        data-en="Kansai International"
+                        data-zh="Kansai International">
+                        Kansai International
+                    </td>
+                    <td>05:30</td>
+                    <td class="">飛行中</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>9C8516</td>
+                    <td class="destination-cell" 
+                        data-ja="Shanghai Pudong International"
+                        data-en="Shanghai Pudong International"
+                        data-zh="Shanghai Pudong International">
+                        Shanghai Pudong International
+                    </td>
+                    <td>10:05</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL33</td>
+                    <td class="destination-cell" 
+                        data-ja="Suvarnabhumi International"
+                        data-en="Suvarnabhumi International"
+                        data-zh="Suvarnabhumi International">
+                        Suvarnabhumi International
+                    </td>
+                    <td>10:20</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell">6E3807, AA8485, AS7337, HA5004, PG4152, UL3357</td>
+                </tr>
+            
+                <tr>
+                    <td>GS7990</td>
+                    <td class="destination-cell" 
+                        data-ja="Tianjin Binhai International"
+                        data-en="Tianjin Binhai International"
+                        data-zh="Tianjin Binhai International">
+                        Tianjin Binhai International
+                    </td>
+                    <td>10:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>JL79</td>
+                    <td class="destination-cell" 
+                        data-ja="Tan Son Nhat International"
+                        data-en="Tan Son Nhat International"
+                        data-zh="Tan Son Nhat International">
+                        Tan Son Nhat International
+                    </td>
+                    <td>10:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell">AA8493, AS7327, HA5011</td>
+                </tr>
+            
+                <tr>
+                    <td>NH877</td>
+                    <td class="destination-cell" 
+                        data-ja="Suvarnabhumi International"
+                        data-en="Suvarnabhumi International"
+                        data-zh="Suvarnabhumi International">
+                        Suvarnabhumi International
+                    </td>
+                    <td>10:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell">TG6102</td>
+                </tr>
+            
+                <tr>
+                    <td>OZ177</td>
+                    <td class="destination-cell" 
+                        data-ja="Seoul (Incheon)"
+                        data-en="Seoul (Incheon)"
+                        data-zh="Seoul (Incheon)">
+                        Seoul (Incheon)
+                    </td>
+                    <td>10:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell">NH6895</td>
+                </tr>
+            
+                <tr>
+                    <td>PR423</td>
+                    <td class="destination-cell" 
+                        data-ja="Ninoy Aquino International"
+                        data-en="Ninoy Aquino International"
+                        data-zh="Ninoy Aquino International">
+                        Ninoy Aquino International
+                    </td>
+                    <td>10:55</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>KE720</td>
+                    <td class="destination-cell" 
+                        data-ja="Seoul (Incheon)"
+                        data-en="Seoul (Incheon)"
+                        data-zh="Seoul (Incheon)">
+                        Seoul (Incheon)
+                    </td>
+                    <td>11:00</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>VJ821</td>
+                    <td class="destination-cell" 
+                        data-ja="Tan Son Nhat International"
+                        data-en="Tan Son Nhat International"
+                        data-zh="Tan Son Nhat International">
+                        Tan Son Nhat International
+                    </td>
+                    <td>11:00</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>MM809</td>
+                    <td class="destination-cell" 
+                        data-ja="Seoul (Incheon)"
+                        data-en="Seoul (Incheon)"
+                        data-zh="Seoul (Incheon)">
+                        Seoul (Incheon)
+                    </td>
+                    <td>11:10</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>UO629</td>
+                    <td class="destination-cell" 
+                        data-ja="Hong Kong International"
+                        data-en="Hong Kong International"
+                        data-zh="Hong Kong International">
+                        Hong Kong International
+                    </td>
+                    <td>11:30</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+                <tr>
+                    <td>MM877</td>
+                    <td class="destination-cell" 
+                        data-ja="Shanghai Pudong International"
+                        data-en="Shanghai Pudong International"
+                        data-zh="Shanghai Pudong International">
+                        Shanghai Pudong International
+                    </td>
+                    <td>11:40</td>
+                    <td class="">予定</td>
+                    <td class="codeshare-cell"></td>
+                </tr>
+            
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const languages = ["ja", "en", "zh"]; // 日本語, 英語, 中国語
+    let currentLangIndex = 0;
+    const cells = document.querySelectorAll(".destination-cell");
+
+    function updateLanguage() {
+        const currentLang = languages[currentLangIndex];
+        
+        cells.forEach(cell => {
+            const text = cell.getAttribute(`data-${currentLang}`);
+            if (text) {
+                cell.textContent = text;
+            }
+        });
+        
+        currentLangIndex = (currentLangIndex + 1) % languages.length;
+    }
+
+    // 最初に実行し、その後5秒ごとに実行
+    updateLanguage(); 
+    setInterval(updateLanguage, 5000); // 5秒ごとに言語を切り替え
+</script>
+
+</body>
+</html>
