@@ -1,8 +1,10 @@
 name: Deploy Flight Board
 
 on:
+  # 5分ごとにジョブを自動実行
   schedule:
     - cron: '*/5 * * * *'
+  # 手動実行も可能にする
   workflow_dispatch:
 
 jobs:
@@ -27,23 +29,10 @@ jobs:
         env:
           AEROAPI_KEY: ${{ secrets.AEROAPI_KEY }}
           
-      # ★★★ 新規追加ステップ：生成されたファイルをArtifactとして保存 ★★★
-      - name: Upload generated index.html
-        uses: actions/upload-artifact@v4
-        with:
-          name: deployment-files
-          path: index.html # リポジトリのルートにある index.html を保存
-          
-      # 2. デプロイ専用のジョブを開始 (ファイルをダウンロードするため、別のジョブに分ける)
-      - name: Download deployment files
-        uses: actions/download-artifact@v4
-        with:
-          name: deployment-files
-          path: . # カレントディレクトリ（ルート）にファイルをダウンロード
-          
-      # 3. GitHub Pagesにデプロイ
+      # ★★★ ここにデプロイステップが続く ★★★
+      # 2. GitHub Pagesにデプロイ
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: . # ダウンロードしたファイルがあるルートディレクトリを指定
+          publish_dir: . # index.html が生成されたリポジトリのルートを指定
