@@ -1,16 +1,14 @@
 name: Deploy Flight Board
 
 on:
-  # 5分ごとにジョブを自動実行
   schedule:
     - cron: '*/5 * * * *'
-  # 手動実行も可能にする
   workflow_dispatch:
 
 jobs:
   generate_and_deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,23 +16,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.x'
           
       - name: Install dependencies
-        run: pip install requests pandas  # 必要なライブラリをインストール
+        run: pip install requests
         
-      # ★★★ ここで修正したPythonスクリプトを実行し、HTML/JSONファイルを生成 ★★★
-    # ... (前略)
+      # 1. index.html を生成する
       - name: Run data generator script
-        run: python generate_flights.py # ← この行が生成スクリプトの実行です
+        run: python generate_flights.py
         env:
           AEROAPI_KEY: ${{ secrets.AEROAPI_KEY }}
-    # ... (後略)
           
-      # 修正後
-      # ★★★ 生成されたファイルをGitHub Pagesにデプロイ ★★★
+      # ★★★ 新規追加ステップ：生成されたファイルをArtifactとして保存 ★★★
+      - name: Upload generated index.html
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-files
+          path: index.html # リポジトリのルートにある index.html を保存
+          
+      # 2. デプロイ専用のジョブを開始 (ファイルをダウンロードするため、別のジョブに分ける)
+      - name: Download deployment files
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-files
+          path: . # カレントディレクトリ（ルート）にファイルをダウンロード
+          
+      # 3. GitHub Pagesにデプロイ
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: . # リポジトリのルート（`index.html`が生成された場所）を指定
+          publish_dir: . # ダウンロードしたファイルがあるルートディレクトリを指定
