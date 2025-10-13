@@ -17,14 +17,21 @@ UTC = timezone.utc
 OUTPUT_HTML_FILE = "index.html"
 # ----------------
 
+# generate_flights.py の修正
+
+# ... (中略)
+
 def fetch_and_generate_html():
     """
     FlightAware AeroAPIからデータを取得し、HTMLファイルを生成します。
     """
     if not AEROAPI_KEY:
-        print("エラー: 環境変数 'AEROAPI_KEY' が設定されていません。")
+        # キーが設定されていない場合にエラーメッセージを出力
+        print("致命的エラー: 環境変数 'AEROAPI_KEY' が設定されていません。")
+        generate_error_html("Secrets設定エラー", "APIキーが環境変数 'AEROAPI_KEY' に設定されていません。")
         return
 
+    # ... (後略)
     headers = {
         "Authorization": f"Token {AEROAPI_KEY}",
         "Accept": "application/json"
