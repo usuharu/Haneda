@@ -1,22 +1,39 @@
-name: App
+name: Deploy Flight Board
 
 on:
-  push:
-    branches: 
-      - main
+  # 5分ごとにジョブを自動実行
+  schedule:
+    - cron: '*/5 * * * *'
+  # 手動実行も可能にする
   workflow_dispatch:
 
 jobs:
-  numpy-test:
+  generate_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-          architecture: 'x64'
+          
       - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run Python
-        run: python app.py
+        run: pip install requests pandas  # 必要なライブラリをインストール
+        
+      # ★★★ ここで修正したPythonスクリプトを実行し、HTML/JSONファイルを生成 ★★★
+      - name: Run data generator script
+        run: python generate_flights.py
+        env:
+          AEROAPI_KEY: ${{ secrets.AEROAPI_KEY }}
+          
+      # ★★★ 生成されたファイルをGitHub Pagesにデプロイ ★★★
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output_dir # HTMLファイルが出力されるディレクトリ
+          
+# (secrets.AEROAPI_KEYはGitHubリポジトリの設定で事前に登録が必要です)
