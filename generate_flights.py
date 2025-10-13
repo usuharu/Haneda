@@ -29,35 +29,21 @@ OUTPUT_HTML_FILE = "index.html"
 # --- 複数空港を持つ主要都市のリスト (英語名) ---
 # このリストに含まれる都市のみ、目的地にIATAコードを付加します。
 MULTI_AIRPORT_CITIES = [
-    "Tokyo", "Osaka", "Nagoya", "Sapporo", # 国内
-    "Shanghai", "Beijing", "Seoul", "Taipei", 
-    "London", "Paris", "New York", "Chicago", "Moscow", "Milan",
-    "Rome", "Kuala Lumpur", "Jakarta", "Bangkok", "Manila"
+    "Tokyo"
 ]
 # ----------------
 
 # --- 都市名の多言語マッピングテーブル（主要な都市のみ） ---
 # APIが返す英語名から、日本語と中国語に変換
 CITY_MAPPING = {
-    "Tokyo": {"ja": "東京", "zh": "东京"},
-    "Osaka": {"ja": "大阪", "zh": "大阪"},
-    "Nagoya": {"ja": "名古屋", "zh": "名古屋"},
-    "Sapporo": {"ja": "札幌", "zh": "札幌"},
-    "Fukuoka": {"ja": "福岡", "zh": "福冈"},
-    "Naha": {"ja": "那覇", "zh": "那霸"},
-    "Shanghai": {"ja": "上海", "zh": "上海"},
-    "Beijing": {"ja": "北京", "zh": "北京"},
-    "Seoul": {"ja": "ソウル", "zh": "首尔"},
-    "Taipei": {"ja": "台北", "zh": "台北"},
-    "Hong Kong": {"ja": "香港", "zh": "香港"},
-    "Singapore": {"ja": "シンガポール", "zh": "新加坡"},
-    "Bangkok": {"ja": "バンコク", "zh": "曼谷"},
-    "Kuala Lumpur": {"ja": "クアラルンプール", "zh": "吉隆坡"},
-    "Manila": {"ja": "マニラ", "zh": "马尼拉"},
-    "Jakarta": {"ja": "ジャカルタ", "zh": "雅加达"},
-    "Sydney": {"ja": "シドニー", "zh": "悉尼"},
-    "London": {"ja": "ロンドン", "zh": "伦敦"},
-    "Paris": {"ja": "パリ", "zh": "巴黎"},
+    "Tokyo": {"ja": "東京","en": "Tokyo","zh": "东京"},
+    "Itami": {"ja": "大阪（伊丹）","en": "Osaka(ITM)","zh": "大阪（伊丹）"},
+    "Fukuoka": {"ja": "福岡","en": "Fukuoka","zh": "福冈"},
+    "Kagoshima": {"ja": "鹿児島","en": "Kagoshima","zh": "鹿儿岛"},
+    "Ishigaki": {"ja": "石垣","en": "Ishigaki","zh": "石垣"},
+    "Chitose": {"ja": "札幌（新千歳）","en": "Sapporo","zh": "札幌"},
+    "Aomori": {"ja": "青森","en": "Aomori","zh": "青森"},
+    
     # マッピングにない場合は英語名をそのまま使用
 }
 # ----------------
