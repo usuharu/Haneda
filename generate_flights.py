@@ -18,6 +18,7 @@ except (ImportError, KeyError):
 # --- 設定値 ---
 BASE_URL = "http://api.aviationstack.com/v1/"
 AIRPORT_CODE = "HND"  
+AIRLINE_LOGO_BASE_URL = "https://content.flights-api.com/v1/airlines/logo/" 
 
 # タイムゾーン設定
 JST = timezone(timedelta(hours=9))
@@ -87,7 +88,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
             elif flight['status'] == '欠航':
                 status_class = "status-canceled"
                 
-            logo_url = f"logos/{flight['airline_code']}.png"
+            logo_url = f"{AIRLINE_LOGO_BASE_URL}{flight['airline_code']}.png"
             # 3言語のデータを td タグの data属性として埋め込む
             table_rows += f"""
                 <tr>
