@@ -21,8 +21,9 @@ except (ImportError, KeyError):
 BASE_URL = "http://api.aviationstack.com/v1/"
 AIRPORT_CODE = "HND"  
 
-# 航空会社ロゴのCDNベースURL
-AIRLINE_LOGO_BASE_URL = "https://content.flights-api.com/v1/airlines/logo/" 
+# 航空会社ロゴのCDNベースURLをGoogle Flightsの公開CDNに切り替え
+AIRLINE_LOGO_BASE_URL = "https://www.gstatic.com/flights/airline_logos/32px/" 
+
 
 # タイムゾーン設定
 JST = timezone(timedelta(hours=9))
