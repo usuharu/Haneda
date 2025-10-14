@@ -6,12 +6,9 @@ import traceback
 from typing import List, Dict, Any
 
 # --- APIキーの安全な取得 ---
-# GitHub Actionsでシークレット(Secrets)として設定することを想定しています
 AVIATION_STACK_KEY = os.environ.get("AVIATION_STACK_KEY")
 try:
-    # Colabでのテスト用（Colab上で実行する場合のみ有効）
     from google.colab import userdata
-    # 注意: Colabで実行する場合、事前にシークレット名 'AVIATION_STACK_KEY' でキーを登録してください
     if not AVIATION_STACK_KEY:
         AVIATION_STACK_KEY = userdata.get('AVIATION_STACK_KEY') 
 except (ImportError, KeyError):
@@ -21,9 +18,8 @@ except (ImportError, KeyError):
 BASE_URL = "http://api.aviationstack.com/v1/"
 AIRPORT_CODE = "HND"  
 
-# 航空会社ロゴのCDNベースURLをGoogle Flightsの公開CDNに切り替え
+# ★★★ 修正: ロゴのCDNをGoogle Flightsの公開CDNに切り替え ★★★
 AIRLINE_LOGO_BASE_URL = "https://www.gstatic.com/flights/airline_logos/32px/" 
-
 
 # タイムゾーン設定
 JST = timezone(timedelta(hours=9))
@@ -37,10 +33,7 @@ MULTI_AIRPORT_CITIES = [
     "London", "Paris", "New York", "Chicago", "Moscow", "Milan",
     "Rome", "Kuala Lumpur", "Jakarta", "Bangkok", "Manila"
 ]
-# ----------------
-
 # --- 都市名の多言語マッピングテーブル（主要な都市のみ） ---
-# 日本語、英語、中国語に対応
 CITY_MAPPING = {
     "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Osaka": {"ja": "大阪", "en": "Osaka", "zh": "大阪"},
     "Nagoya": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Sapporo": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"},
@@ -51,9 +44,9 @@ CITY_MAPPING = {
     "Bangkok": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"},
     "Manila": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"},
     "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"},
-    "Paris": {"ja": "パリ", "en": "Paris", "zh": "巴黎"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"},
+    "Paris": {"ja": "パリ", "en": "Paris", "zh": "パリ"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"},
     "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "New York": {"ja": "ニューヨーク", "en": "New York", "zh": "纽约"},
-    "Moscow": {"ja": "モスクワ", "en": "Moscow", "zh": "莫斯科"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"},
+    "Moscow": {"ja": "モスクワ", "en": "Moscow", "zh": "莫斯科"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "ディバイ"},
     "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"},
     "Hanoi": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Ho Chi Minh City": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"},
     "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"},
@@ -70,7 +63,6 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
     current_time_jst = datetime.now(JST).strftime('%Y/%m/%d %H:%M:%S JST')
     
     table_rows = ""
-    # 列数が5に変更されている
     if not flights_data:
         table_rows = '<tr><td colspan="5" style="text-align: center; color: gray; padding: 20px;">現在、出発予定のフライト情報はありません。</td></tr>'
     else:
@@ -83,29 +75,47 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
             elif flight['remark_type'] == 'active':
                 remark_class = "remark-active"
             
-            # CDNからロゴ画像のURLを生成
-            logo_url = f"{AIRLINE_LOGO_BASE_URL}{flight['airline_code']}.png"
+            # CDNからロゴ画像のURLを生成 (運航会社)
+            main_logo_url = f"{AIRLINE_LOGO_BASE_URL}{flight['airline_code']}.png"
 
-            # changed_timeが空でない場合にクラスを適用
-            changed_time_cell_class = "changed-time-cell" if flight['changed_time'] else "changed-time-cell-empty"
+            # 変更時刻セルに適用するCSSクラス
+            changed_time_cell_class = "changed-time-cell" if flight['changed_time'] and flight['changed_time'] not in ["欠航"] else "changed-time-cell-empty"
+            
+            # ★★★ 修正: すべてのコードシェア便を表示する ★★★
+            codeshare_html = ""
+            codeshare_flights = [f.strip() for f in flight['codeshare_flights'].split(', ') if f.strip()]
+            
+            for cs_flight in sorted(codeshare_flights):
+                cs_airline_code = cs_flight[:2].upper()
+                cs_logo_url = f"{AIRLINE_LOGO_BASE_URL}{cs_airline_code}.png"
+                codeshare_html += f"""
+                    <div class="codeshare-item">
+                        <img src="{cs_logo_url}" alt="{cs_airline_code} Logo" class="airline-logo codeshare-logo">
+                        <span class="codeshare-flight-number">{cs_flight}</span>
+                    </div>
+                """
             
             table_rows += f"""
                 <tr>
                     <td class="time-cell">{flight['scheduled_time']}</td>
-                    <td class="{changed_time_cell_class}">{flight['changed_time']}</td>
+                    <td class="{changed_time_cell_class}">
+                        {flight['changed_time']}
+                    </td>
                     <td class="destination-cell" 
                         data-ja="{flight['destination_ja']}"
                         data-en="{flight['destination_en']}"
                         data-zh="{flight['destination_zh']}">
                         {flight['destination_ja']}
                     </td>
-                    <td class="flight-cell">
-                        <img src="{logo_url}" alt="{flight['airline_code']} Logo" class="airline-logo">
-                        <span>{flight['flight_number']}</span>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="{main_logo_url}" alt="{flight['airline_code']} Logo" class="airline-logo">
+                            <span class="main-flight-number">{flight['flight_number']}</span>
+                        </div>
+                        {codeshare_html}
                     </td>
                     <td class="remark-cell {remark_class}">
                         {flight['remark']}
-                        <span class="codeshare-info">({flight['codeshare_flights']})</span>
                     </td>
                 </tr>
             """
@@ -125,34 +135,61 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
         h1 {{ text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }}
         h2 {{ text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }}
         table {{ width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.1em; table-layout: fixed; }}
-        th, td {{ padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: left; height: 55px; vertical-align: middle; }}
+        /* ★★★ 修正: td の height: 55px; を削除して、便名セルの高さに合わせる ★★★ */
+        th, td {{ padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }} 
         th {{ background-color: #f0f0f0; color: #333; font-weight: bold; border-top: 2px solid #004d99; }}
         td {{ color: #111; }}
+        
+        /* 最終行の罫線を太くする */
+        tbody tr:last-child td {{ border-bottom: 2px solid #004d99; }}
 
         /* --- 列幅の調整 (5列構成) --- */
         th:nth-child(1), td:nth-child(1) {{ width: 12%; text-align: center; font-size: 1.2em; }} /* 定刻 */
         th:nth-child(2), td:nth-child(2) {{ width: 12%; text-align: center; font-size: 1.2em; }} /* 変更時刻 */
-        th:nth-child(3), td:nth-child(3) {{ width: 38%; }} /* 行き先 */
-        th:nth-child(4), td:nth-child(4) {{ width: 18%; }} /* 便名 */
-        th:nth-child(5), td:nth-child(5) {{ width: 20%; font-size: 1em; }} /* 備考 */
+        th:nth-child(3), td:nth-child(3) {{ width: 35%; }} /* 行き先 */
+        th:nth-child(4), td:nth-child(4) {{ width: 28%; }} /* 便名 (幅を広く) */
+        th:nth-child(5), td:nth-child(5) {{ width: 13%; font-size: 1em; text-align: center; }} /* 備考 */
 
         /* --- 時刻と備考の調整 --- */
         .time-cell {{ color: #333; font-weight: bold; }}
         .changed-time-cell {{ color: #c00; font-weight: bold; }} /* 変更時刻は赤字 */
-        .changed-time-cell-empty {{ color: #ccc; }} /* 変更時刻がない場合は薄い灰色（JavaScriptで更新されるため、ここでは適用しないが残す） */
+        .changed-time-cell-empty {{ color: #ccc; }}
         
         /* 備考欄のステータス色 */
-        .remark-delayed {{ color: #c00; font-weight: bold; }} /* 遅延は赤 */
-        .remark-canceled {{ color: #c00; font-weight: bold; }} /* 欠航は赤 */
-        .remark-active {{ color: #008000; font-weight: bold; }} /* 出発済は緑 */
+        .remark-delayed {{ color: #c00; font-weight: bold; }}
+        .remark-canceled {{ color: #c00; font-weight: bold; }}
+        .remark-active {{ color: #008000; font-weight: bold; }}
         .remark-cell {{ font-weight: bold; }}
         
-        .codeshare-info {{ display: block; font-size: 0.8em; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; margin-top: 3px; font-weight: normal; }} /* コードシェア便名は小さく備考の下に */
+        /* --- 便名グループ（運航便名とコードシェア便名）の整形 --- */
+        .flight-group-cell {{ 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* 縦方向の中央揃え */
+            gap: 2px; /* アイテム間の縦方向の間隔 */
+        }}
 
+        .main-flight-item, .codeshare-item {{ 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            white-space: nowrap;
+        }}
+        
+        .main-flight-item {{ 
+            font-weight: bold; 
+            color: #004d99; 
+            font-size: 1em; 
+        }}
+        
+        .codeshare-item {{
+            font-size: 0.85em; /* コードシェア便名は小さく */
+            color: #777;
+        }}
 
-        /* --- ロゴと便名 --- */
-        .flight-cell {{ display: flex; align-items: center; gap: 8px; font-weight: bold; color: #004d99; }}
-        .airline-logo {{ width: 28px; height: 28px; border-radius: 4px; object-fit: contain; border: 1px solid #eee; flex-shrink: 0; }}
+        /* --- ロゴ --- */
+        .airline-logo {{ width: 20px; height: 20px; border-radius: 4px; object-fit: contain; flex-shrink: 0; }}
+        .codeshare-logo {{ width: 16px; height: 16px; }} /* コードシェア便のロゴはさらに小さく */
 
         /* --- その他 --- */
         .update-info {{ font-size: 0.85em; text-align: right; color: #777; margin-bottom: 15px; }}
@@ -192,7 +229,6 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
         const currentLang = languages[currentLangIndex];
         
         cells.forEach(cell => {{
-            // data属性から対応する言語のテキストを取得
             const text = cell.getAttribute(`data-${{currentLang}}`);
             if (text) {{
                 cell.textContent = text;
@@ -202,9 +238,8 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
         currentLangIndex = (currentLangIndex + 1) % languages.length;
     }}
 
-    // 初回実行とインターバル設定
     updateLanguage(); 
-    setInterval(updateLanguage, 5000); // 5秒ごとに実行
+    setInterval(updateLanguage, 5000); 
 </script>
 
 </body>
@@ -274,10 +309,8 @@ def fetch_and_generate_html():
     print(f"[{datetime.now(JST).strftime('%H:%M:%S')}] AviationStackリクエスト開始: {BASE_URL + endpoint}...")
 
     try:
-        # タイムアウトを15秒に設定 (以前のエラー対策)
         response = requests.get(BASE_URL + endpoint, params=params, timeout=15)
         
-        # HTTP 429 Too Many Requests エラーのハンドリング
         if response.status_code == 429:
             retry_after = response.headers.get('Retry-After', '不明な時間')
             error_msg = f"API制限超過 (HTTP 429)。{retry_after}後に再試行してください。\n詳細: {response.text}"
@@ -299,39 +332,32 @@ def fetch_and_generate_html():
                 scheduled_time_str = flight['departure']['scheduled']
                 estimated_time_str = flight['departure'].get('estimated')
                 
+                # ISO 8601形式文字列をdatetimeオブジェクトに変換
                 scheduled_datetime_utc = datetime.fromisoformat(scheduled_time_str.replace('Z', '+00:00'))
                 
                 arrival_iata = flight['arrival'].get('iata')
-                # 定刻と行先でフライトを識別
                 flight_key = (scheduled_time_str, arrival_iata)
 
                 # 2. 便名とコードシェアの処理
                 current_flight_number = flight['flight']['iata'].upper() 
-                # codeshared: null -> 運航会社, codeshared: object -> コードシェア便
                 is_operating_carrier = not flight['flight'].get('codeshared')
                 
                 status = flight['flight_status']
 
                 if flight_key not in aggregated_flights:
                     
-                    # 3. 行先情報の処理
+                    # 3. 行先情報の処理 (前回のロジックを維持)
                     destination_iata = arrival_iata
                     destination_city_en = flight['arrival'].get('city')
-                    destination_airport_name = flight['arrival'].get('airport')
                     
                     iata_suffix = ""
-
-                    # 都市名が存在する場合
                     if destination_city_en:
                         base_en = destination_city_en
-                        # 複数空港を持つ都市の場合、(IATA)を付加
                         if base_en in MULTI_AIRPORT_CITIES and destination_iata and base_en not in ["Tokyo", "Osaka", "Nagoya"]:
                              iata_suffix = f" ({destination_iata})"
-                    # 都市名がなく空港名のみの場合
                     else:
-                        base_en = destination_airport_name or 'N/A'
+                        base_en = flight['arrival'].get('airport') or 'N/A'
                         
-                    # マッピングテーブルから多言語名を取得
                     mapped_names = CITY_MAPPING.get(base_en.split('(')[0].strip(), {"ja": base_en, "en": base_en, "zh": base_en})
 
                     destination_ja = mapped_names['ja'] + iata_suffix
@@ -343,12 +369,11 @@ def fetch_and_generate_html():
                     changed_time_jst = "" # 初期値は空欄
 
                     # 5. ステータスと備考の処理
-                    remark_display = ""
+                    remark_display = "予定"
                     remark_type = status
                     
                     if status == 'cancelled':
                         remark_display = "欠航"
-                        changed_time_jst = "" # 欠航の場合は変更時刻を空欄
                         remark_type = "cancelled"
                         
                     elif estimated_time_str and status not in ['active', 'landed']:
@@ -359,18 +384,11 @@ def fetch_and_generate_html():
                             changed_time_jst = estimated_datetime_utc.astimezone(JST).strftime('%H:%M')
                             remark_display = "遅延"
                             remark_type = "delayed"
-                        else:
-                            # ほぼ定刻の場合
-                            remark_display = "予定"
+                        # ほぼ定刻の場合は「予定」を維持
                             
                     elif status == 'active':
                         remark_display = "出発済"
-                        changed_time_jst = ""
                         remark_type = "active"
-                    else:
-                        remark_display = "予定"
-                        changed_time_jst = ""
-
 
                     aggregated_flights[flight_key] = {
                         'sort_key': scheduled_datetime_utc, 
@@ -408,7 +426,7 @@ def fetch_and_generate_html():
         final_flights_data = []
         for flight_data in aggregated_flights.values():
             
-            # 備考欄に含めるコードシェア便名リスト
+            # 備考欄から削除し、codeshare_flightsキーに格納
             codeshare_list = [
                 c for c in flight_data['codeshares'] 
                 if c != flight_data['flight_number'] # 運航便自身を除く
@@ -425,7 +443,7 @@ def fetch_and_generate_html():
                 'airline_code': flight_data['airline_code'], 
                 'remark': flight_data['remark'],
                 'remark_type': flight_data['remark_type'],
-                # コードシェアを一つの文字列に
+                # すべてのコードシェア便名をカンマ区切り文字列として保持
                 'codeshare_flights': ', '.join(sorted(codeshare_list)), 
             })
 
@@ -444,7 +462,6 @@ def fetch_and_generate_html():
     except requests.exceptions.RequestException as e:
         error_trace = traceback.format_exc()
         print(f"致命的なリクエストエラーが発生しました: {e}")
-        # リクエストエラー発生時も詳細情報をHTMLに出力
         generate_error_html("リクエスト/接続エラー", str(e) + "\n\n" + error_trace)
         return
 
