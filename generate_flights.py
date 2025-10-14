@@ -28,25 +28,22 @@ OUTPUT_HTML_FILE = "index.html"
 
 # --- 複数空港を持つ主要都市のリスト (英語名) ---
 MULTI_AIRPORT_CITIES = [
-    "Tokyo", "Osaka", "Nagoya", "Sapporo", 
-    "Shanghai", "Beijing", "Seoul", "Taipei", 
-    "London", "Paris", "New York", "Chicago", "Moscow", "Milan",
-    "Rome", "Kuala Lumpur", "Jakarta", "Bangkok", "Manila"
+    "Tokyo",
 ]
 # --- 都市名の多言語マッピングテーブル（主要な都市のみ） ---
 CITY_MAPPING = {
-    "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Osaka": {"ja": "大阪", "en": "Osaka", "zh": "大阪"},
-    "Nagoya": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Sapporo": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"},
+    "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Itami": {"ja": "大阪（伊丹）", "en": "Osaka(ITM)", "zh": "大阪（伊丹）"},
+    "Chu-Bu Centrair International (Central Japan International)": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Chitose": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"},
     "Fukuoka": {"ja": "福岡", "en": "Fukuoka", "zh": "福冈"}, "Naha": {"ja": "那覇", "en": "Naha", "zh": "那霸"},
     "Shanghai": {"ja": "上海", "en": "Shanghai", "zh": "上海"}, "Beijing": {"ja": "北京", "en": "Beijing", "zh": "北京"},
-    "Seoul": {"ja": "ソウル", "en": "Seoul", "zh": "首尔"}, "Taipei": {"ja": "台北", "en": "Taipei", "zh": "台北"},
-    "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"},
+    "Gimpo Airport": {"ja": "ソウル（金浦）", "en": "Seoul(GMP)", "zh": "首尔(GMP)"}, "Taipei": {"ja": "台北", "en": "Taipei", "zh": "台北"},
+    "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore Changi": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"},
     "Bangkok": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"},
     "Manila": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"},
     "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"},
-    "Paris": {"ja": "パリ", "en": "Paris", "zh": "パリ"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"},
-    "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "New York": {"ja": "ニューヨーク", "en": "New York", "zh": "纽约"},
-    "Moscow": {"ja": "モスクワ", "en": "Moscow", "zh": "莫斯科"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "ディバイ"},
+    "Charles De Gaulle": {"ja": "パリ", "en": "Paris(CDG)", "zh": "巴黎(CDG)"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"},
+    "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "John F Kennedy International": {"ja": "ニューヨーク(JFK)", "en": "New York(JFK)", "zh": "纽约(JFK)"},
+    "Kansai International": {"ja": "大阪（関西）", "en": "Osaka(KIX)", "zh": "大阪（关西）"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"},
     "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"},
     "Hanoi": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Ho Chi Minh City": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"},
     "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"},
