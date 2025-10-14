@@ -19,17 +19,26 @@
         /* 最終行の罫線を太くする */
         tbody tr:last-child td { border-bottom: 2px solid #004d99; }
 
-        /* --- 列幅の調整 (5列構成) --- */
-        th:nth-child(1), td:nth-child(1) { width: 12%; text-align: center; font-size: 1.2em; } /* 定刻 */
-        th:nth-child(2), td:nth-child(2) { width: 12%; text-align: center; font-size: 1.2em; } /* 変更時刻 */
-        th:nth-child(3), td:nth-child(3) { width: 35%; } /* 行き先 */
-        th:nth-child(4), td:nth-child(4) { width: 28%; } /* 便名 (幅を広く) */
-        th:nth-child(5), td:nth-child(5) { width: 13%; font-size: 1em; text-align: center; } /* 備考 */
+        /* --- 列幅の調整 (6列構成) --- */
+        th:nth-child(1), td:nth-child(1) { width: 10%; text-align: center; font-size: 1.2em; } /* 定刻 */
+        th:nth-child(2), td:nth-child(2) { width: 10%; text-align: center; font-size: 1.2em; } /* 変更時刻 */
+        th:nth-child(3), td:nth-child(3) { width: 30%; } /* 行き先 */
+        th:nth-child(4), td:nth-child(4) { width: 25%; } /* 便名 (幅を広く) */
+        th:nth-child(5), td:nth-child(5) { width: 10%; font-size: 1.2em; text-align: center; } /* ゲート ★★★ 追加 ★★★ */
+        th:nth-child(6), td:nth-child(6) { width: 15%; font-size: 1em; text-align: center; } /* 備考 */
 
         /* --- 時刻と備考の調整 --- */
         .time-cell { color: #333; font-weight: bold; }
         .changed-time-cell { color: #c00; font-weight: bold; } /* 変更時刻は赤字 */
         .changed-time-cell-empty { color: #ccc; }
+        
+        /* ゲート番号 */
+        .gate-cell { 
+            font-weight: bold; 
+            color: #004d99; 
+            text-align: center !important; 
+            font-size: 1.3em; 
+        }
         
         /* 備考欄のステータス色 */
         .remark-delayed { color: #c00; font-weight: bold; }
@@ -77,7 +86,7 @@
 <div class="board-container">
     <h1>国内・国際線 出発案内</h1>
     <h2>羽田空港 (HND/RJTT)</h2>
-    <p class="update-info">最終更新日時: 2025/10/15 00:42:27 JST</p>
+    <p class="update-info">最終更新日時: 2025/10/15 00:57:03 JST</p>
 
     <table>
         <thead>
@@ -86,7 +95,7 @@
                 <th>変更時刻</th>
                 <th>行き先</th>
                 <th>便名</th>
-                <th>備考</th>
+                <th>ゲート</th> <th>備考</th>
             </tr>
         </thead>
         <tbody>
@@ -108,6 +117,9 @@
                             <span class="main-flight-number">JL487</span>
                         </div>
                         
+                    </td>
+                    <td class="gate-cell">
+                        8 
                     </td>
                     <td class="remark-cell ">
                         予定
@@ -132,6 +144,107 @@
                         </div>
                         
                     </td>
+                    <td class="gate-cell">
+                        I 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ソウル（仁川）"
+                        data-en="Seoul(ICN)"
+                        data-zh="首尔(ICN)">
+                        ソウル（仁川）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/OZ.png" alt="OZ Logo" class="airline-logo">
+                            <span class="main-flight-number">OZ177</span>
+                        </div>
+                        
+                    <div class="codeshare-item">
+                        <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo codeshare-logo">
+                        <span class="codeshare-flight-number">NH6895</span>
+                    </div>
+                
+                    </td>
+                    <td class="gate-cell">
+                        148 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ソウル（仁川）"
+                        data-en="Seoul(ICN)"
+                        data-zh="首尔(ICN)">
+                        ソウル（仁川）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/KE.png" alt="KE Logo" class="airline-logo">
+                            <span class="main-flight-number">KE720</span>
+                        </div>
+                        
+                    <div class="codeshare-item">
+                        <img src="https://www.gstatic.com/flights/airline_logos/32px/AF.png" alt="AF Logo" class="airline-logo codeshare-logo">
+                        <span class="codeshare-flight-number">AF5367</span>
+                    </div>
+                
+                    <div class="codeshare-item">
+                        <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo codeshare-logo">
+                        <span class="codeshare-flight-number">JL5257</span>
+                    </div>
+                
+                    <div class="codeshare-item">
+                        <img src="https://www.gstatic.com/flights/airline_logos/32px/VS.png" alt="VS Logo" class="airline-logo codeshare-logo">
+                        <span class="codeshare-flight-number">VS5530</span>
+                    </div>
+                
+                    </td>
+                    <td class="gate-cell">
+                        146 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:10</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ソウル（仁川）"
+                        data-en="Seoul(ICN)"
+                        data-zh="首尔(ICN)">
+                        ソウル（仁川）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/MM.png" alt="MM Logo" class="airline-logo">
+                            <span class="main-flight-number">MM809</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        C 
+                    </td>
                     <td class="remark-cell ">
                         予定
                     </td>
@@ -155,6 +268,9 @@
                         </div>
                         
                     </td>
+                    <td class="gate-cell">
+                        C 
+                    </td>
                     <td class="remark-cell ">
                         予定
                     </td>
@@ -177,6 +293,9 @@
                             <span class="main-flight-number">IJ445</span>
                         </div>
                         
+                    </td>
+                    <td class="gate-cell">
+                         
                     </td>
                     <td class="remark-cell ">
                         予定
