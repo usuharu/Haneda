@@ -4,18 +4,1140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>エラーが発生しました</title>
+    <title>羽田空港 出発便掲示板</title>
     <style>
-        body { font-family: monospace; white-space: pre-wrap; margin: 20px; background-color: #fee; color: #c00; border: 1px solid #f99; padding: 20px; }
-        pre { background-color: #fff; padding: 15px; border: 1px dashed #c00; overflow-x: auto; }
+        /* CSSの波括弧は全て二重({, })にしてNameErrorを回避 */
+        body { font-family: 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }
+        .board-container { background-color: #fff; padding: 20px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 1000px; margin: 30px auto; border-radius: 6px; }
+        h1 { text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }
+        h2 { text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.1em; table-layout: fixed; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: left; height: 55px; vertical-align: middle; }
+        th { background-color: #f0f0f0; color: #333; font-weight: bold; border-top: 2px solid #004d99; }
+        td { color: #111; }
+
+        /* --- 列幅の調整 (5列構成) --- */
+        th:nth-child(1), td:nth-child(1) { width: 12%; text-align: center; font-size: 1.2em; } /* 定刻 */
+        th:nth-child(2), td:nth-child(2) { width: 12%; text-align: center; font-size: 1.2em; } /* 変更時刻 */
+        th:nth-child(3), td:nth-child(3) { width: 38%; } /* 行き先 */
+        th:nth-child(4), td:nth-child(4) { width: 18%; } /* 便名 */
+        th:nth-child(5), td:nth-child(5) { width: 20%; font-size: 1em; } /* 備考 */
+
+        /* --- 時刻と備考の調整 --- */
+        .time-cell { color: #333; font-weight: bold; }
+        .changed-time-cell { color: #c00; font-weight: bold; } /* 変更時刻は赤字 */
+        .changed-time-cell-empty { color: #ccc; } /* 変更時刻がない場合は薄い灰色（JavaScriptで更新されるため、ここでは適用しないが残す） */
+        
+        /* 備考欄のステータス色 */
+        .remark-delayed { color: #c00; font-weight: bold; } /* 遅延は赤 */
+        .remark-canceled { color: #c00; font-weight: bold; } /* 欠航は赤 */
+        .remark-active { color: #008000; font-weight: bold; } /* 出発済は緑 */
+        .remark-cell { font-weight: bold; }
+        
+        .codeshare-info { display: block; font-size: 0.8em; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; margin-top: 3px; font-weight: normal; } /* コードシェア便名は小さく備考の下に */
+
+
+        /* --- ロゴと便名 --- */
+        .flight-cell { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #004d99; }
+        .airline-logo { width: 28px; height: 28px; border-radius: 4px; object-fit: contain; border: 1px solid #eee; flex-shrink: 0; }
+
+        /* --- その他 --- */
+        .update-info { font-size: 0.85em; text-align: right; color: #777; margin-bottom: 15px; }
     </style>
+    <meta http-equiv="refresh" content="300"> 
 </head>
 <body>
-    <h1>データ取得エラー: APIレート制限エラー (429)</h1>
-    <p>フライト情報の取得中に深刻なエラーが発生しました。詳細は以下のログを確認してください。</p>
-    <p>最終試行時刻: 2025/10/14 22:48:11 JST</p>
-    <h2>詳細:</h2>
-    <pre>API制限超過 (HTTP 429)。不明な時間後に再試行してください。
-詳細: {"error":{"code":"usage_limit_reached","message":"Your monthly usage limit has been reached. Please upgrade your Subscription Plan."}}</pre>
+
+<div class="board-container">
+    <h1>国内・国際線 出発案内</h1>
+    <h2>羽田空港 (HND/RJTT)</h2>
+    <p class="update-info">最終更新日時: 2025/10/14 23:24:16 JST</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>定刻</th>
+                <th>変更時刻</th>
+                <th>行き先</th>
+                <th>便名</th>
+                <th>備考</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                <tr>
+                    <td class="time-cell">09:05</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Singapore Changi"
+                        data-en="Singapore Changi"
+                        data-zh="Singapore Changi">
+                        Singapore Changi
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL35</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:40</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Singapore Changi"
+                        data-en="Singapore Changi"
+                        data-zh="Singapore Changi">
+                        Singapore Changi
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH843</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(AC6228, SQ5905, UA7991)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:25</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kagoshima"
+                        data-en="Kagoshima"
+                        data-zh="Kagoshima">
+                        Kagoshima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL641</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL901</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:35</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chitose"
+                        data-en="Chitose"
+                        data-zh="Chitose">
+                        Chitose
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL501</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Aomori"
+                        data-en="Aomori"
+                        data-zh="Aomori">
+                        Aomori
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL141</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Ishigaki"
+                        data-en="Ishigaki"
+                        data-zh="Ishigaki">
+                        Ishigaki
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL971</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">15:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Miyazaki"
+                        data-en="Miyazaki"
+                        data-zh="Miyazaki">
+                        Miyazaki
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/6J.png" alt="6J Logo" class="airline-logo">
+                        <span>6J51</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(NH2451)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:00</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Memanbetsu"
+                        data-en="Memanbetsu"
+                        data-zh="Memanbetsu">
+                        Memanbetsu
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL565</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(CI8407, HA5277, HD75, NH4775, QR6029)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:05</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kansai International"
+                        data-en="Kansai International"
+                        data-zh="Kansai International">
+                        Kansai International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL221</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(AS7479, HA5085, MH9167, QR6045)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:10</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Izumo"
+                        data-en="Izumo"
+                        data-zh="Izumo">
+                        Izumo
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL277</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(HA5117, QR6049)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:15</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kansai International"
+                        data-en="Kansai International"
+                        data-zh="Kansai International">
+                        Kansai International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH93</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(CA6712, SC206, TG6037, TK8844, VA7433, ZH3205)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:15</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Matsuyama"
+                        data-en="Matsuyama"
+                        data-zh="Matsuyama">
+                        Matsuyama
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/HA.png" alt="HA Logo" class="airline-logo">
+                        <span>TBD</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">(AS7509, HA5179, QR6051)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:40</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Shirahama"
+                        data-en="Shirahama"
+                        data-zh="Shirahama">
+                        Shirahama
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL213</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Takamatsu"
+                        data-en="Takamatsu"
+                        data-zh="Takamatsu">
+                        Takamatsu
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL475</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kushiro"
+                        data-en="Kushiro"
+                        data-zh="Kushiro">
+                        Kushiro
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL541</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Asahikawa"
+                        data-en="Asahikawa"
+                        data-zh="Asahikawa">
+                        Asahikawa
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL551</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">16:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Obihiro"
+                        data-en="Obihiro"
+                        data-zh="Obihiro">
+                        Obihiro
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL573</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:00</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kumamoto"
+                        data-en="Kumamoto"
+                        data-zh="Kumamoto">
+                        Kumamoto
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL625</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:05</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chu-Bu Centrair International (Central Japan International)"
+                        data-en="Chu-Bu Centrair International (Central Japan International)"
+                        data-zh="Chu-Bu Centrair International (Central Japan International)">
+                        Chu-Bu Centrair International (Central Japan International)
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL201</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:05</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kagoshima"
+                        data-en="Kagoshima"
+                        data-zh="Kagoshima">
+                        Kagoshima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL643</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:05</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Oita"
+                        data-en="Oita"
+                        data-zh="Oita">
+                        Oita
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL661</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Charles De Gaulle"
+                        data-en="Charles De Gaulle"
+                        data-zh="Charles De Gaulle">
+                        Charles De Gaulle
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/AF.png" alt="AF Logo" class="airline-logo">
+                        <span>AF187</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(KL2005, QF4214)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">17:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Heathrow"
+                        data-en="Heathrow"
+                        data-zh="Heathrow">
+                        Heathrow
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>TBD</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(IB3619, JL7083)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">18:10</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="N/A"
+                        data-en="N/A"
+                        data-zh="N/A">
+                        N/A
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH633</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(SQ5963)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">18:35</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Charles De Gaulle"
+                        data-en="Charles De Gaulle"
+                        data-zh="Charles De Gaulle">
+                        Charles De Gaulle
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH215</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">18:40</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Frankfurt International Airport"
+                        data-en="Frankfurt International Airport"
+                        data-zh="Frankfurt International Airport">
+                        Frankfurt International Airport
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH223</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">19:15</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Tokushima"
+                        data-en="Tokushima"
+                        data-zh="Tokushima">
+                        Tokushima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL455</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(HA5193)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">19:20</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Washington Dulles International"
+                        data-en="Washington Dulles International"
+                        data-zh="Washington Dulles International">
+                        Washington Dulles International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH102</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(SQ5922, TG6084, UA7942)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">19:40</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chicago O'hare International"
+                        data-en="Chicago O'hare International"
+                        data-zh="Chicago O'hare International">
+                        Chicago O'hare International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NH.png" alt="NH Logo" class="airline-logo">
+                        <span>NH112</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">20:15</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kita Kyushu"
+                        data-en="Kita Kyushu"
+                        data-zh="Kita Kyushu">
+                        Kita Kyushu
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/7G.png" alt="7G Logo" class="airline-logo">
+                        <span>7G77</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(NH3877)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">20:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chicago O'hare International"
+                        data-en="Chicago O'hare International"
+                        data-zh="Chicago O'hare International">
+                        Chicago O'hare International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL10</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">20:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Frankfurt International Airport"
+                        data-en="Frankfurt International Airport"
+                        data-zh="Frankfurt International Airport">
+                        Frankfurt International Airport
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/LH.png" alt="LH Logo" class="airline-logo">
+                        <span>LH717</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Itami"
+                        data-en="Itami"
+                        data-zh="Itami">
+                        Itami
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL121</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(HA5029)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Okayama"
+                        data-en="Okayama"
+                        data-zh="Okayama">
+                        Okayama
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/NU.png" alt="NU Logo" class="airline-logo">
+                        <span>NU237</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(GA9332, HA5095)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chitose"
+                        data-en="Chitose"
+                        data-zh="Chitose">
+                        Chitose
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL519</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(AS7411, BA3439, HA5248)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Shanghai Hongqiao International"
+                        data-en="Shanghai Hongqiao International"
+                        data-zh="Shanghai Hongqiao International">
+                        Shanghai Hongqiao International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/MU.png" alt="MU Logo" class="airline-logo">
+                        <span>MU538</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(FM3036, JL5643)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Miyazaki"
+                        data-en="Miyazaki"
+                        data-zh="Miyazaki">
+                        Miyazaki
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/6J.png" alt="6J Logo" class="airline-logo">
+                        <span>6J59</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(NH2459)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:35</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chitose"
+                        data-en="Chitose"
+                        data-zh="Chitose">
+                        Chitose
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/BC.png" alt="BC Logo" class="airline-logo">
+                        <span>BC719</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:35</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Ishigaki"
+                        data-en="Ishigaki"
+                        data-zh="Ishigaki">
+                        Ishigaki
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL973</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(HA5967)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">23:40</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Hakodate"
+                        data-en="Hakodate"
+                        data-zh="Hakodate">
+                        Hakodate
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/HD.png" alt="HD Logo" class="airline-logo">
+                        <span>HD59</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(NH4759)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">00:00</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Akita"
+                        data-en="Akita"
+                        data-zh="Akita">
+                        Akita
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL165</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">02:55</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL329</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">02:55</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kagoshima"
+                        data-en="Kagoshima"
+                        data-zh="Kagoshima">
+                        Kagoshima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL653</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:00</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Itami"
+                        data-en="Itami"
+                        data-zh="Itami">
+                        Itami
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL133</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:20</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Taipei Songshan (Sung Shan)"
+                        data-en="Taipei Songshan (Sung Shan)"
+                        data-zh="Taipei Songshan (Sung Shan)">
+                        Taipei Songshan (Sung Shan)
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL99</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:20</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Hiroshima Airport"
+                        data-en="Hiroshima Airport"
+                        data-zh="Hiroshima Airport">
+                        Hiroshima Airport
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL265</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:25</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kita Kyushu"
+                        data-en="Kita Kyushu"
+                        data-zh="Kita Kyushu">
+                        Kita Kyushu
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL377</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:25</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Tokushima"
+                        data-en="Tokushima"
+                        data-zh="Tokushima">
+                        Tokushima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL463</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:30</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="John F Kennedy International"
+                        data-en="John F Kennedy International"
+                        data-zh="John F Kennedy International">
+                        John F Kennedy International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL4</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:45</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL331</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(LA7475)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Kagoshima"
+                        data-en="Kagoshima"
+                        data-zh="Kagoshima">
+                        Kagoshima
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/BC.png" alt="BC Logo" class="airline-logo">
+                        <span>BC309</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">03:50</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Chitose"
+                        data-en="Chitose"
+                        data-zh="Chitose">
+                        Chitose
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/HD.png" alt="HD Logo" class="airline-logo">
+                        <span>HD35</span>
+                    </td>
+                    <td class="remark-cell remark-active">
+                        出発済
+                        <span class="codeshare-info">(NH4735)</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">05:15</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Takamatsu"
+                        data-en="Takamatsu"
+                        data-zh="Takamatsu">
+                        Takamatsu
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL487</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">06:55</td>
+                    <td class="changed-time-cell-empty"></td>
+                    <td class="destination-cell" 
+                        data-ja="Honolulu International"
+                        data-en="Honolulu International"
+                        data-zh="Honolulu International">
+                        Honolulu International
+                    </td>
+                    <td class="flight-cell">
+                        <img src="https://content.flights-api.com/v1/airlines/logo/JL.png" alt="JL Logo" class="airline-logo">
+                        <span>JL72</span>
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                        <span class="codeshare-info">()</span>
+                    </td>
+                </tr>
+            
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 行き先を5秒ごとに日本語、英語、中国語で切り替えるJavaScript
+    const languages = ["ja", "en", "zh"];
+    let currentLangIndex = 0;
+    const cells = document.querySelectorAll(".destination-cell");
+
+    function updateLanguage() {
+        const currentLang = languages[currentLangIndex];
+        
+        cells.forEach(cell => {
+            // data属性から対応する言語のテキストを取得
+            const text = cell.getAttribute(`data-${currentLang}`);
+            if (text) {
+                cell.textContent = text;
+            }
+        });
+        
+        currentLangIndex = (currentLangIndex + 1) % languages.length;
+    }
+
+    // 初回実行とインターバル設定
+    updateLanguage(); 
+    setInterval(updateLanguage, 5000); // 5秒ごとに実行
+</script>
+
 </body>
 </html>
