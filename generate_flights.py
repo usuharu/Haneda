@@ -127,7 +127,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
     <title>羽田空港 出発便掲示板</title>
     <style>
         /* CSSの波括弧は全て二重({{, }})にしてNameErrorを回避 */
-        body {{ font-family: 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }}
+        body {{ font-family: 'BIZ UDPGothic', 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }}
         .board-container {{ background-color: #fff; padding: 20px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 1000px; margin: 30px auto; border-radius: 6px; }}
         h1 {{ text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }}
         h2 {{ text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }}
