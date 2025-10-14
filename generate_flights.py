@@ -18,36 +18,21 @@ except (ImportError, KeyError):
 BASE_URL = "http://api.aviationstack.com/v1/"
 AIRPORT_CODE = "HND"  
 
-# ★★★ 修正: ロゴのCDNをGoogle Flightsの公開CDNに切り替え ★★★
+# 航空会社ロゴのCDNベースURLをGoogle Flightsの公開CDNに切り替え
 AIRLINE_LOGO_BASE_URL = "https://www.gstatic.com/flights/airline_logos/32px/" 
 
 # タイムゾーン設定
+# UTC+9:00 のタイムゾーンオブジェクトを定義
 JST = timezone(timedelta(hours=9))
 # 出力ファイル名
 OUTPUT_HTML_FILE = "index.html"
 
 # --- 複数空港を持つ主要都市のリスト (英語名) ---
 MULTI_AIRPORT_CITIES = [
-    "Tokyo",
+    "Tokyo"
 ]
 # --- 都市名の多言語マッピングテーブル（主要な都市のみ） ---
-CITY_MAPPING = {
-    "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Itami": {"ja": "大阪（伊丹）", "en": "Osaka(ITM)", "zh": "大阪（伊丹）"},
-    "Chu-Bu Centrair International (Central Japan International)": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Chitose": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"},
-    "Fukuoka": {"ja": "福岡", "en": "Fukuoka", "zh": "福冈"}, "Naha": {"ja": "那覇", "en": "Naha", "zh": "那霸"},
-    "Shanghai": {"ja": "上海", "en": "Shanghai", "zh": "上海"}, "Beijing": {"ja": "北京", "en": "Beijing", "zh": "北京"},
-    "Gimpo Airport": {"ja": "ソウル（金浦）", "en": "Seoul(GMP)", "zh": "首尔(GMP)"}, "Taipei": {"ja": "台北", "en": "Taipei", "zh": "台北"},
-    "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore Changi": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"},
-    "Bangkok": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"},
-    "Manila": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"},
-    "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"},
-    "Charles De Gaulle": {"ja": "パリ", "en": "Paris(CDG)", "zh": "巴黎(CDG)"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"},
-    "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "John F Kennedy International": {"ja": "ニューヨーク(JFK)", "en": "New York(JFK)", "zh": "纽约(JFK)"},
-    "Kansai International": {"ja": "大阪（関西）", "en": "Osaka(KIX)", "zh": "大阪（关西）"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"},
-    "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"},
-    "Hanoi": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Ho Chi Minh City": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"},
-    "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"},
-}
+CITY_MAPPING = { "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Itami": {"ja": "大阪（伊丹）", "en": "Osaka(ITM)", "zh": "大阪（伊丹）"}, "Chu-Bu Centrair International" {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Chitose": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"}, "Fukuoka": {"ja": "福岡", "en": "Fukuoka", "zh": "福冈"}, "Naha": {"ja": "那覇", "en": "Naha", "zh": "那霸"}, "Shanghai Pudong International": {"ja": "上海（浦東）", "en": "Shanghai(PVG)", "zh": "上海(PVG)"}, "Beijing Capital International": {"ja": "北京", "en": "Beijing", "zh": "北京"}, "Gimpo Airport": {"ja": "ソウル（金浦）", "en": "Seoul(GMP)", "zh": "首尔(GMP)"}, "Seoul": {"ja": "ソウル（仁川）", "en": "Seoul(ICN)", "zh": "首尔(ICN)"}, "Honolulu International": {"ja": "ホノルル", "en": "Honolulu", "zh": "檀香山"},"Taipei Songshan": {"ja": "台北（松山）", "en": "Taipei(TSA)", "zh": "台北(TSA)"}, "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore Changi": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"}, "Suvarnabhumi International": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"}, "Ninoy Aquino International": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"}, "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"}, "Charles De Gaulle": {"ja": "パリ", "en": "Paris(CDG)", "zh": "巴黎(CDG)"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"}, "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "John F Kennedy International": {"ja": "ニューヨーク(JFK)", "en": "New York(JFK)", "zh": "纽约(JFK)"}, "Kansai International": {"ja": "大阪（関西）", "en": "Osaka(KIX)", "zh": "大阪（关西）"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"}, "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"}, "Noi Bai International": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Tan Son Nhat International": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"}, "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"}, "Kagoshima": {"ja": "鹿児島", "en": "Kagoshima", "zh": "鹿儿岛"},  }
 # ----------------
 
 print("--- SCRIPT STARTED SUCCESSFULLY ---")
@@ -57,6 +42,7 @@ print("--- SCRIPT STARTED SUCCESSFULLY ---")
 def generate_html_file(flights_data: List[Dict[str, str]]):
     """フライトデータからHTMLコンテンツを生成し、ファイルに書き出す"""
     
+    # JSTで現在時刻を取得
     current_time_jst = datetime.now(JST).strftime('%Y/%m/%d %H:%M:%S JST')
     
     table_rows = ""
@@ -70,7 +56,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
             elif flight['remark_type'] == 'cancelled':
                 remark_class = "remark-canceled"
             elif flight['remark_type'] == 'active':
-                remark_class = "remark-active"
+                remark_class = "remark-active" 
             
             # CDNからロゴ画像のURLを生成 (運航会社)
             main_logo_url = f"{AIRLINE_LOGO_BASE_URL}{flight['airline_code']}.png"
@@ -78,7 +64,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
             # 変更時刻セルに適用するCSSクラス
             changed_time_cell_class = "changed-time-cell" if flight['changed_time'] and flight['changed_time'] not in ["欠航"] else "changed-time-cell-empty"
             
-            # ★★★ 修正: すべてのコードシェア便を表示する ★★★
+            # すべてのコードシェア便を表示する
             codeshare_html = ""
             codeshare_flights = [f.strip() for f in flight['codeshare_flights'].split(', ') if f.strip()]
             
@@ -127,12 +113,11 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
     <title>羽田空港 出発便掲示板</title>
     <style>
         /* CSSの波括弧は全て二重({{, }})にしてNameErrorを回避 */
-        body {{ font-family: 'BIZ UDPGothic', 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }}
+        body {{ font-family: 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }}
         .board-container {{ background-color: #fff; padding: 20px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 1000px; margin: 30px auto; border-radius: 6px; }}
         h1 {{ text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }}
         h2 {{ text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }}
         table {{ width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.1em; table-layout: fixed; }}
-        /* ★★★ 修正: td の height: 55px; を削除して、便名セルの高さに合わせる ★★★ */
         th, td {{ padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }} 
         th {{ background-color: #f0f0f0; color: #333; font-weight: bold; border-top: 2px solid #004d99; }}
         td {{ color: #111; }}
@@ -324,12 +309,18 @@ def fetch_and_generate_html():
         aggregated_flights: Dict[tuple, Dict[str, Any]] = {}
 
         for flight in data.get('data', []):
+            
+            # 出発済み（active）および着陸済み（landed）のフライトを除外する
+            status = flight['flight_status']
+            if status in ['active', 'landed']:
+                continue 
+            
             try:
                 # 1. 識別キーの作成と時刻の処理
                 scheduled_time_str = flight['departure']['scheduled']
                 estimated_time_str = flight['departure'].get('estimated')
                 
-                # ISO 8601形式文字列をdatetimeオブジェクトに変換
+                # ISO 8601形式文字列をdatetimeオブジェクトに変換 (UTC時刻)
                 scheduled_datetime_utc = datetime.fromisoformat(scheduled_time_str.replace('Z', '+00:00'))
                 
                 arrival_iata = flight['arrival'].get('iata')
@@ -339,11 +330,9 @@ def fetch_and_generate_html():
                 current_flight_number = flight['flight']['iata'].upper() 
                 is_operating_carrier = not flight['flight'].get('codeshared')
                 
-                status = flight['flight_status']
-
                 if flight_key not in aggregated_flights:
                     
-                    # 3. 行先情報の処理 (前回のロジックを維持)
+                    # 3. 行先情報の処理
                     destination_iata = arrival_iata
                     destination_city_en = flight['arrival'].get('city')
                     
@@ -361,11 +350,11 @@ def fetch_and_generate_html():
                     destination_en = mapped_names['en'] + iata_suffix
                     destination_zh = mapped_names['zh'] + iata_suffix
 
-                    # 4. 定刻と変更時刻の計算
+                    # 4. 定刻と変更時刻の計算 (JSTに変換)
                     scheduled_time_jst = scheduled_datetime_utc.astimezone(JST).strftime('%H:%M')
                     changed_time_jst = "" # 初期値は空欄
 
-                    # 5. ステータスと備考の処理
+                    # 5. ステータスと備考の処理 
                     remark_display = "予定"
                     remark_type = status
                     
@@ -373,7 +362,8 @@ def fetch_and_generate_html():
                         remark_display = "欠航"
                         remark_type = "cancelled"
                         
-                    elif estimated_time_str and status not in ['active', 'landed']:
+                    elif estimated_time_str:
+                        # estimated_time_strが存在する場合、JSTに変換して比較
                         estimated_datetime_utc = datetime.fromisoformat(estimated_time_str.replace('Z', '+00:00'))
                         
                         # 定刻より5分以上遅れているか判定
@@ -381,11 +371,6 @@ def fetch_and_generate_html():
                             changed_time_jst = estimated_datetime_utc.astimezone(JST).strftime('%H:%M')
                             remark_display = "遅延"
                             remark_type = "delayed"
-                        # ほぼ定刻の場合は「予定」を維持
-                            
-                    elif status == 'active':
-                        remark_display = "出発済"
-                        remark_type = "active"
 
                     aggregated_flights[flight_key] = {
                         'sort_key': scheduled_datetime_utc, 
@@ -395,6 +380,7 @@ def fetch_and_generate_html():
                         'destination_ja': destination_ja,
                         'destination_en': destination_en,
                         'destination_zh': destination_zh,
+                        # JSTに変換済みの時刻を使用
                         'scheduled_time': scheduled_time_jst,
                         'changed_time': changed_time_jst, 
                         'remark': remark_display,
