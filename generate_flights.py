@@ -31,8 +31,9 @@ OUTPUT_HTML_FILE = "index.html"
 MULTI_AIRPORT_CITIES = [
     "Tokyo"
 ]
-# --- 都市名の多言語マッピングテーブル（主要な都市のみ） ---
-CITY_MAPPING = { "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Itami": {"ja": "大阪（伊丹）", "en": "Osaka(ITM)", "zh": "大阪（伊丹）"}, "Chu-Bu Centrair International": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Chitose": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"}, "Fukuoka": {"ja": "福岡", "en": "Fukuoka", "zh": "福冈"}, "Naha": {"ja": "那覇", "en": "Naha", "zh": "那霸"}, "Shanghai Pudong International": {"ja": "上海（浦東）", "en": "Shanghai(PVG)", "zh": "上海(PVG)"}, "Beijing Capital International": {"ja": "北京", "en": "Beijing", "zh": "北京"}, "Gimpo Airport": {"ja": "ソウル（金浦）", "en": "Seoul(GMP)", "zh": "首尔(GMP)"}, "Seoul": {"ja": "ソウル（仁川）", "en": "Seoul(ICN)", "zh": "首尔(ICN)"}, "Honolulu International": {"ja": "ホノルル", "en": "Honolulu", "zh": "檀香山"},"Taipei Songshan": {"ja": "台北（松山）", "en": "Taipei(TSA)", "zh": "台北(TSA)"}, "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore Changi": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"}, "Suvarnabhumi International": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"}, "Ninoy Aquino International": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"}, "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"}, "Charles De Gaulle": {"ja": "パリ", "en": "Paris(CDG)", "zh": "巴黎(CDG)"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"}, "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "John F Kennedy International": {"ja": "ニューヨーク(JFK)", "en": "New York(JFK)", "zh": "纽约(JFK)"}, "Kansai International": {"ja": "大阪（関西）", "en": "Osaka(KIX)", "zh": "大阪（关西）"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"}, "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"}, "Noi Bai International": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Tan Son Nhat International": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"}, "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"}, "Kagoshima": {"ja": "鹿児島", "en": "Kagoshima", "zh": "鹿儿岛"},  }
+
+# --- 都市名の多言語マッピングテーブル（主要な都市のみ） 
+--- CITY_MAPPING = { "Tokyo": {"ja": "東京", "en": "Tokyo", "zh": "东京"}, "Itami": {"ja": "大阪（伊丹）", "en": "Osaka(ITM)", "zh": "大阪（伊丹）"}, "Chu-Bu Centrair International": {"ja": "名古屋", "en": "Nagoya", "zh": "名古屋"}, "Chitose": {"ja": "札幌", "en": "Sapporo", "zh": "札幌"}, "Fukuoka": {"ja": "福岡", "en": "Fukuoka", "zh": "福冈"}, "Naha": {"ja": "那覇", "en": "Naha", "zh": "那霸"}, "Shanghai Pudong International": {"ja": "上海（浦東）", "en": "Shanghai(PVG)", "zh": "上海(PVG)"}, "Beijing Capital International": {"ja": "北京", "en": "Beijing", "zh": "北京"}, "Gimpo Airport": {"ja": "ソウル（金浦）", "en": "Seoul(GMP)", "zh": "首尔(GMP)"}, "Seoul": {"ja": "ソウル（仁川）", "en": "Seoul(ICN)", "zh": "首尔(ICN)"}, "Honolulu International": {"ja": "ホノルル", "en": "Honolulu", "zh": "檀香山"},"Taipei Songshan": {"ja": "台北（松山）", "en": "Taipei(TSA)", "zh": "台北(TSA)"}, "Hong Kong": {"ja": "香港", "en": "Hong Kong", "zh": "香港"}, "Singapore Changi": {"ja": "シンガポール", "en": "Singapore", "zh": "新加坡"}, "Suvarnabhumi International": {"ja": "バンコク", "en": "Bangkok", "zh": "曼谷"}, "Kuala Lumpur": {"ja": "クアラルンプール", "en": "Kuala Lumpur", "zh": "吉隆坡"}, "Ninoy Aquino International": {"ja": "マニラ", "en": "Manila", "zh": "马尼拉"}, "Jakarta": {"ja": "ジャカルタ", "en": "Jakarta", "zh": "雅加达"}, "Sydney": {"ja": "シドニー", "en": "Sydney", "zh": "悉尼"}, "London": {"ja": "ロンドン", "en": "London", "zh": "伦敦"}, "Charles De Gaulle": {"ja": "パリ", "en": "Paris(CDG)", "zh": "巴黎(CDG)"}, "Frankfurt": {"ja": "フランクフルト", "en": "Frankfurt", "zh": "法兰克福"}, "Los Angeles": {"ja": "ロサンゼルス", "en": "Los Angeles", "zh": "洛杉矶"}, "John F Kennedy International": {"ja": "ニューヨーク(JFK)", "en": "New York(JFK)", "zh": "纽约(JFK)"}, "Kansai International": {"ja": "大阪（関西）", "en": "Osaka(KIX)", "zh": "大阪（关西）"}, "Dubai": {"ja": "ドバイ", "en": "Dubai", "zh": "迪拜"}, "Istanbul": {"ja": "イスタンブール", "en": "Istanbul", "zh": "伊斯坦布尔"}, "Guam": {"ja": "グアム", "en": "Guam", "zh": "关岛"}, "Noi Bai International": {"ja": "ハノイ", "en": "Hanoi", "zh": "河内"}, "Tan Son Nhat International": {"ja": "ホーチミン", "en": "Ho Chi Minh City", "zh": "胡志明市"}, "Milan": {"ja": "ミラノ", "en": "Milan", "zh": "米兰"}, "Rome": {"ja": "ローマ", "en": "Rome", "zh": "罗马"}, "Kagoshima": {"ja": "鹿児島", "en": "Kagoshima", "zh": "鹿儿岛"},  } 
 # ----------------
 
 print("--- SCRIPT STARTED SUCCESSFULLY ---")
@@ -47,7 +48,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
     
     table_rows = ""
     if not flights_data:
-        table_rows = '<tr><td colspan="5" style="text-align: center; color: gray; padding: 20px;">現在、出発予定のフライト情報はありません。</td></tr>'
+        table_rows = '<tr><td colspan="6" style="text-align: center; color: gray; padding: 20px;">現在、出発予定のフライト情報はありません。</td></tr>'
     else:
         for flight in flights_data:
             remark_class = ""
@@ -97,6 +98,9 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
                         </div>
                         {codeshare_html}
                     </td>
+                    <td class="gate-cell">
+                        {flight['gate']} 
+                    </td>
                     <td class="remark-cell {remark_class}">
                         {flight['remark']}
                     </td>
@@ -125,17 +129,26 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
         /* 最終行の罫線を太くする */
         tbody tr:last-child td {{ border-bottom: 2px solid #004d99; }}
 
-        /* --- 列幅の調整 (5列構成) --- */
-        th:nth-child(1), td:nth-child(1) {{ width: 12%; text-align: center; font-size: 1.2em; }} /* 定刻 */
-        th:nth-child(2), td:nth-child(2) {{ width: 12%; text-align: center; font-size: 1.2em; }} /* 変更時刻 */
-        th:nth-child(3), td:nth-child(3) {{ width: 35%; }} /* 行き先 */
-        th:nth-child(4), td:nth-child(4) {{ width: 28%; }} /* 便名 (幅を広く) */
-        th:nth-child(5), td:nth-child(5) {{ width: 13%; font-size: 1em; text-align: center; }} /* 備考 */
+        /* --- 列幅の調整 (6列構成) --- */
+        th:nth-child(1), td:nth-child(1) {{ width: 10%; text-align: center; font-size: 1.2em; }} /* 定刻 */
+        th:nth-child(2), td:nth-child(2) {{ width: 10%; text-align: center; font-size: 1.2em; }} /* 変更時刻 */
+        th:nth-child(3), td:nth-child(3) {{ width: 30%; }} /* 行き先 */
+        th:nth-child(4), td:nth-child(4) {{ width: 25%; }} /* 便名 (幅を広く) */
+        th:nth-child(5), td:nth-child(5) {{ width: 10%; font-size: 1.2em; text-align: center; }} /* ゲート ★★★ 追加 ★★★ */
+        th:nth-child(6), td:nth-child(6) {{ width: 15%; font-size: 1em; text-align: center; }} /* 備考 */
 
         /* --- 時刻と備考の調整 --- */
         .time-cell {{ color: #333; font-weight: bold; }}
         .changed-time-cell {{ color: #c00; font-weight: bold; }} /* 変更時刻は赤字 */
         .changed-time-cell-empty {{ color: #ccc; }}
+        
+        /* ゲート番号 */
+        .gate-cell {{ 
+            font-weight: bold; 
+            color: #004d99; 
+            text-align: center !important; 
+            font-size: 1.3em; 
+        }}
         
         /* 備考欄のステータス色 */
         .remark-delayed {{ color: #c00; font-weight: bold; }}
@@ -192,7 +205,7 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
                 <th>変更時刻</th>
                 <th>行き先</th>
                 <th>便名</th>
-                <th>備考</th>
+                <th>ゲート</th> <th>備考</th>
             </tr>
         </thead>
         <tbody>
@@ -235,7 +248,6 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
     except Exception as e:
         print(f"HTMLファイル生成エラー: {e}")
 
-# ... (generate_error_html 関数は省略)
 
 def generate_error_html(title: str, details: str):
     """エラー発生時にエラー情報を書き込んだHTMLファイルを生成する"""
@@ -353,8 +365,13 @@ def fetch_and_generate_html():
                     # 4. 定刻と変更時刻の計算 (JSTに変換)
                     scheduled_time_jst = scheduled_datetime_utc.astimezone(JST).strftime('%H:%M')
                     changed_time_jst = "" # 初期値は空欄
+                    
+                    # 5. ゲート情報の取得 ★★★ 追加 ★★★
+                    # gate情報がない場合は空文字列を設定
+                    gate_number = flight['departure'].get('gate')
+                    display_gate = gate_number if gate_number else "" 
 
-                    # 5. ステータスと備考の処理 
+                    # 6. ステータスと備考の処理 
                     remark_display = "予定"
                     remark_type = status
                     
@@ -385,6 +402,7 @@ def fetch_and_generate_html():
                         'changed_time': changed_time_jst, 
                         'remark': remark_display,
                         'remark_type': remark_type,
+                        'gate': display_gate, # ★★★ 追加 ★★★
                     }
 
                 # 既存のフライトキーの場合、コードシェア情報を追加
@@ -426,8 +444,8 @@ def fetch_and_generate_html():
                 'airline_code': flight_data['airline_code'], 
                 'remark': flight_data['remark'],
                 'remark_type': flight_data['remark_type'],
-                # すべてのコードシェア便名をカンマ区切り文字列として保持
                 'codeshare_flights': ', '.join(sorted(codeshare_list)), 
+                'gate': flight_data['gate'], # ★★★ 追加 ★★★
             })
 
         # 時系列でのソート
