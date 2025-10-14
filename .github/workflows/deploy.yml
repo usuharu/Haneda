@@ -1,9 +1,13 @@
 name: Update Flight Board
 
+# .github/workflows/deploy.yml
+
 on:
   schedule:
-    - cron: '*/30 * * * *' # 30分ごとに実行
+    # 偶数時間の0分に実行 (2時間ごと - 1日12回)
+    - cron: '0 */2 * * *' 
   workflow_dispatch:
+# ...
 
 jobs:
   build-and-deploy:
