@@ -114,6 +114,9 @@ def generate_html_file(flights_data: List[Dict[str, str]]):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
     <title>羽田空港 出発便掲示板</title>
     <style>
         /* CSSの波括弧は全て二重({{, }})にしてNameErrorを回避 */
