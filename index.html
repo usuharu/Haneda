@@ -4,13 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
     <title>羽田空港 出発便掲示板</title>
     <style>
         /* CSSの波括弧は全て二重({, })にしてNameErrorを回避 */
-        body { font-family: 'BIZ UDPGothic','Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }
+        body { font-family: 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }
         .board-container { background-color: #fff; padding: 20px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 1000px; margin: 30px auto; border-radius: 6px; }
         h1 { text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }
         h2 { text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }
@@ -27,7 +24,7 @@
         th:nth-child(2), td:nth-child(2) { width: 10%; text-align: center; font-size: 1.2em; } /* 変更時刻 */
         th:nth-child(3), td:nth-child(3) { width: 30%; } /* 行き先 */
         th:nth-child(4), td:nth-child(4) { width: 25%; } /* 便名 (幅を広く) */
-        th:nth-child(5), td:nth-child(5) { width: 10%; font-size: 1.2em; text-align: center; } /* ゲート ★★★ 追加 ★★★ */
+        th:nth-child(5), td:nth-child(5) { width: 10%; font-size: 1.2em; text-align: center; } /* ゲート */
         th:nth-child(6), td:nth-child(6) { width: 15%; font-size: 1em; text-align: center; } /* 備考 */
 
         /* --- 時刻と備考の調整 --- */
@@ -87,9 +84,9 @@
 <body>
 
 <div class="board-container">
-    <h1>出発 Departure</h1>
-    <h2>离开 출발</h2>
-    <p class="update-info">最終更新日時: 2025/10/19 19:17:37 JST</p>
+    <h1>国内・国際線 出発案内</h1>
+    <h2>羽田空港 (HND/RJTT)</h2>
+    <p class="update-info">最終更新日時: 2025/10/19 21:09:22 JST</p>
 
     <table>
         <thead>
@@ -98,115 +95,12 @@
                 <th>変更時刻</th>
                 <th>行き先</th>
                 <th>便名</th>
-                <th>ゲート</th> <th>備考</th>
+                <th>ゲート</th>
+                <th>備考</th>
             </tr>
         </thead>
         <tbody>
-            
-                <tr>
-                    <td class="time-cell">09:05</td>
-                    <td class="changed-time-cell-empty">
-                        
-                    </td>
-                    <td class="destination-cell" 
-                        data-ja="ドバイ"
-                        data-en="Dubai"
-                        data-zh="迪拜">
-                        ドバイ
-                    </td>
-                    <td class="flight-group-cell">
-                        <div class="main-flight-item">
-                            <img src="https://www.gstatic.com/flights/airline_logos/32px/EK.png" alt="EK Logo" class="airline-logo">
-                            <span class="main-flight-number">EK313</span>
-                        </div>
-                        
-                    </td>
-                    <td class="gate-cell">
-                        H 
-                    </td>
-                    <td class="remark-cell ">
-                        予定
-                    </td>
-                </tr>
-            
-                <tr>
-                    <td class="time-cell">09:05</td>
-                    <td class="changed-time-cell-empty">
-                        
-                    </td>
-                    <td class="destination-cell" 
-                        data-ja="上海（浦東）"
-                        data-en="Shanghai(PVG)"
-                        data-zh="上海(PVG)">
-                        上海（浦東）
-                    </td>
-                    <td class="flight-group-cell">
-                        <div class="main-flight-item">
-                            <img src="https://www.gstatic.com/flights/airline_logos/32px/HO.png" alt="HO Logo" class="airline-logo">
-                            <span class="main-flight-number">HO1386</span>
-                        </div>
-                        
-                    </td>
-                    <td class="gate-cell">
-                        I 
-                    </td>
-                    <td class="remark-cell ">
-                        予定
-                    </td>
-                </tr>
-            
-                <tr>
-                    <td class="time-cell">09:05</td>
-                    <td class="changed-time-cell-empty">
-                        
-                    </td>
-                    <td class="destination-cell" 
-                        data-ja="シンガポール"
-                        data-en="Singapore"
-                        data-zh="新加坡">
-                        シンガポール
-                    </td>
-                    <td class="flight-group-cell">
-                        <div class="main-flight-item">
-                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
-                            <span class="main-flight-number">JL35</span>
-                        </div>
-                        
-                    </td>
-                    <td class="gate-cell">
-                         
-                    </td>
-                    <td class="remark-cell ">
-                        予定
-                    </td>
-                </tr>
-            
-                <tr>
-                    <td class="time-cell">09:05</td>
-                    <td class="changed-time-cell-empty">
-                        
-                    </td>
-                    <td class="destination-cell" 
-                        data-ja="バンコク"
-                        data-en="Bangkok"
-                        data-zh="曼谷">
-                        バンコク
-                    </td>
-                    <td class="flight-group-cell">
-                        <div class="main-flight-item">
-                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
-                            <span class="main-flight-number">NH849</span>
-                        </div>
-                        
-                    </td>
-                    <td class="gate-cell">
-                        73 
-                    </td>
-                    <td class="remark-cell ">
-                        予定
-                    </td>
-                </tr>
-            
+            <tr><td colspan="6" style="text-align: center; color: gray; padding: 20px;">現在、出発予定のフライト情報はありません。</td></tr>
         </tbody>
     </table>
 </div>
