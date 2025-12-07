@@ -4,83 +4,1952 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>エラーが発生しました</title>
+    <title>羽田空港 出発便掲示板</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
     <style>
-        body { font-family: monospace; white-space: pre-wrap; margin: 20px; background-color: #fee; color: #c00; border: 1px solid #f99; padding: 20px; }
-        pre { background-color: #fff; padding: 15px; border: 1px dashed #c00; overflow-x: auto; }
+        /* CSSの波括弧は全て二重({, })にしてNameErrorを回避 */
+        body { font-family: 'BIZ UDPGothic', 'Meiryo', 'ヒラギノ角ゴ Pro W3', sans-serif; margin: 0; background-color: #e6e6e6; color: #333; }
+        .board-container { background-color: #fff; padding: 20px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 1000px; margin: 30px auto; border-radius: 6px; }
+        h1 { text-align: center; color: #004d99; margin-bottom: 5px; font-size: 1.8em; }
+        h2 { text-align: center; color: #666; font-size: 1.1em; margin-top: 5px; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.1em; table-layout: fixed; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; } 
+        th { background-color: #f0f0f0; color: #333; font-weight: bold; border-top: 2px solid #004d99; }
+        td { color: #111; }
+        
+        /* 最終行の罫線を太くする */
+        tbody tr:last-child td { border-bottom: 2px solid #004d99; }
+
+        /* --- 列幅の調整 (6列構成) --- */
+        th:nth-child(1), td:nth-child(1) { width: 10%; text-align: center; font-size: 1.2em; } /* 定刻 */
+        th:nth-child(2), td:nth-child(2) { width: 10%; text-align: center; font-size: 1.2em; } /* 変更時刻 */
+        th:nth-child(3), td:nth-child(3) { width: 30%; } /* 行き先 */
+        th:nth-child(4), td:nth-child(4) { width: 25%; } /* 便名 (幅を広く) */
+        th:nth-child(5), td:nth-child(5) { width: 10%; font-size: 1.2em; text-align: center; } /* ゲート */
+        th:nth-child(6), td:nth-child(6) { width: 15%; font-size: 1em; text-align: center; } /* 備考 */
+
+        /* --- 時刻と備考の調整 --- */
+        .time-cell { color: #333; font-weight: bold; }
+        .changed-time-cell { color: #c00; font-weight: bold; } /* 変更時刻は赤字 */
+        .changed-time-cell-empty { color: #ccc; }
+        
+        /* ゲート番号 */
+        .gate-cell { 
+            font-weight: bold; 
+            color: #004d99; 
+            text-align: center !important; 
+            font-size: 1.3em; 
+        }
+        
+        /* 備考欄のステータス色 */
+        .remark-delayed { color: #c00; font-weight: bold; }
+        .remark-canceled { color: #c00; font-weight: bold; }
+        .remark-active { color: #008000; font-weight: bold; }
+        .remark-cell { font-weight: bold; }
+        
+        /* --- 便名グループ（運航便名とコードシェア便名）の整形 --- */
+        .flight-group-cell { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* 縦方向の中央揃え */
+            gap: 2px; /* アイテム間の縦方向の間隔 */
+        }
+
+        .main-flight-item, .codeshare-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            white-space: nowrap;
+        }
+        
+        .main-flight-item { 
+            font-weight: bold; 
+            color: #004d99; 
+            font-size: 1em; 
+        }
+        
+        .codeshare-item {
+            font-size: 0.85em; /* コードシェア便名は小さく */
+            color: #777;
+        }
+
+        /* --- ロゴ --- */
+        .airline-logo { width: 20px; height: 20px; border-radius: 4px; object-fit: contain; flex-shrink: 0; }
+        .codeshare-logo { width: 16px; height: 16px; } /* コードシェア便のロゴはさらに小さく */
+
+        /* --- その他 --- */
+        .update-info { font-size: 0.85em; text-align: right; color: #777; margin-bottom: 15px; }
     </style>
+    <meta http-equiv="refresh" content="300"> 
 </head>
 <body>
-    <h1>データ取得エラー: リクエスト/接続エラー</h1>
-    <p>フライト情報の取得中に深刻なエラーが発生しました。詳細は以下のログを確認してください。</p>
-    <p>最終試行時刻: 2025/12/08 05:20:44 JST</p>
-    <h2>詳細:</h2>
-    <pre>HTTPConnectionPool(host='api.aviationstack.com', port=80): Read timed out. (read timeout=15)
 
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 534, in _make_request
-    response = conn.getresponse()
-               ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connection.py", line 571, in getresponse
-    httplib_response = super().getresponse()
-                       ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/http/client.py", line 1395, in getresponse
-    response.begin()
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/http/client.py", line 325, in begin
-    version, status, reason = self._read_status()
-                              ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/http/client.py", line 286, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/socket.py", line 718, in readinto
-    return self._sock.recv_into(b)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-TimeoutError: timed out
+<div class="board-container">
+    <h1>国内・国際線 出発案内</h1>
+    <h2>羽田空港 (HND/RJTT)</h2>
+    <p class="update-info">最終更新日時: 2025/12/08 07:17:50 JST</p>
 
-The above exception was the direct cause of the following exception:
+    <table>
+        <thead>
+            <tr>
+                <th>定刻</th>
+                <th>変更時刻</th>
+                <th>行き先</th>
+                <th>便名</th>
+                <th>ゲート</th>
+                <th>備考</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+                <tr>
+                    <td class="time-cell">08:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL307</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        12 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL905</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        9 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="鹿児島"
+                        data-en="Kagoshima"
+                        data-zh="鹿儿岛">
+                        鹿児島
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL643</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        8 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="パリ"
+                        data-en="Paris(CDG)"
+                        data-zh="巴黎(CDG)">
+                        パリ
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL45</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        F 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL907</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        10 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="イスタンブール"
+                        data-en="Istanbul"
+                        data-zh="伊斯坦布尔">
+                        イスタンブール
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH219</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        67A 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="大阪（伊丹）"
+                        data-en="Osaka(ITM)"
+                        data-zh="大阪（伊丹）">
+                        大阪（伊丹）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL107</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        16 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="シドニー"
+                        data-en="Sydney"
+                        data-zh="悉尼">
+                        シドニー
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH889</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        P 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="香港"
+                        data-en="Hong Kong"
+                        data-zh="香港">
+                        香港
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH859</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        P 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="シンガポール"
+                        data-en="Singapore"
+                        data-zh="新加坡">
+                        シンガポール
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/SQ.png" alt="SQ Logo" class="airline-logo">
+                            <span class="main-flight-number">SQ631</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:55</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Odate Noshiro"
+                        data-en="Odate Noshiro"
+                        data-zh="Odate Noshiro">
+                        Odate Noshiro
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH719</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        504 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">08:55</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Iwami"
+                        data-en="Iwami"
+                        data-zh="Iwami">
+                        Iwami
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH725</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        47 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="パリ"
+                        data-en="Paris(CDG)"
+                        data-zh="巴黎(CDG)">
+                        パリ
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/AF.png" alt="AF Logo" class="airline-logo">
+                            <span class="main-flight-number">AF281</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL309</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        9 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:10</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL311</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        13 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:10</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="N/A"
+                        data-en="N/A"
+                        data-zh="N/A">
+                        N/A
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH633</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        508 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:20</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="台北（松山）"
+                        data-en="Taipei(TSA)"
+                        data-zh="台北(TSA)">
+                        台北（松山）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH851</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        69 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:20</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Guangzhou Baiyun International"
+                        data-en="Guangzhou Baiyun International"
+                        data-zh="Guangzhou Baiyun International">
+                        Guangzhou Baiyun International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH923</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        701 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="大阪（伊丹）"
+                        data-en="Osaka(ITM)"
+                        data-zh="大阪（伊丹）">
+                        大阪（伊丹）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL111</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        14 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Oita"
+                        data-en="Oita"
+                        data-zh="Oita">
+                        Oita
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL663</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        7 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ロンドン"
+                        data-en="London"
+                        data-zh="伦敦">
+                        ロンドン
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/BA.png" alt="BA Logo" class="airline-logo">
+                            <span class="main-flight-number">BA8</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Kochi"
+                        data-en="Kochi"
+                        data-zh="Kochi">
+                        Kochi
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL493</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        4 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="マニラ"
+                        data-en="Manila"
+                        data-zh="马尼拉">
+                        マニラ
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH869</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:40</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="香港"
+                        data-en="Hong Kong"
+                        data-zh="香港">
+                        香港
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL29</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:40</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Matsuyama"
+                        data-en="Matsuyama"
+                        data-zh="Matsuyama">
+                        Matsuyama
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL433</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        88 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:40</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL909</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        12 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:45</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Izumo"
+                        data-en="Izumo"
+                        data-zh="Izumo">
+                        Izumo
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL279</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        11 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ロンドン"
+                        data-en="London"
+                        data-zh="伦敦">
+                        ロンドン
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL43</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="青森"
+                        data-en="Aomori"
+                        data-zh="青森">
+                        青森
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL143</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        21 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">09:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="パリ"
+                        data-en="Paris(CDG)"
+                        data-zh="巴黎(CDG)">
+                        パリ
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH215</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL313</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        10 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Shanghai Hongqiao International"
+                        data-en="Shanghai Hongqiao International"
+                        data-zh="Shanghai Hongqiao International">
+                        Shanghai Hongqiao International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH969</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        67A 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="鹿児島"
+                        data-en="Kagoshima"
+                        data-zh="鹿儿岛">
+                        鹿児島
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL645</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        3 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ロンドン"
+                        data-en="London"
+                        data-zh="伦敦">
+                        ロンドン
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH211</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:10</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="香港"
+                        data-en="Hong Kong"
+                        data-zh="香港">
+                        香港
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/CX.png" alt="CX Logo" class="airline-logo">
+                            <span class="main-flight-number">CX543</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:15</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="徳島"
+                        data-en="Tokushima"
+                        data-zh="德岛">
+                        徳島
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL455</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        9 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:15</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Toyama"
+                        data-en="Toyama"
+                        data-zh="Toyama">
+                        Toyama
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH315</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:15</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Soekarno-Hatta International"
+                        data-en="Soekarno-Hatta International"
+                        data-zh="Soekarno-Hatta International">
+                        Soekarno-Hatta International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH855</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="台北（松山）"
+                        data-en="Taipei(TSA)"
+                        data-zh="台北(TSA)">
+                        台北（松山）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/BR.png" alt="BR Logo" class="airline-logo">
+                            <span class="main-flight-number">BR189</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Chicago O'hare International"
+                        data-en="Chicago O'hare International"
+                        data-zh="Chicago O'hare International">
+                        Chicago O'hare International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH112</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL913</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        7 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="大阪（伊丹）"
+                        data-en="Osaka(ITM)"
+                        data-zh="大阪（伊丹）">
+                        大阪（伊丹）
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL113</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        18 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="秋田"
+                        data-en="Akita"
+                        data-zh="秋田">
+                        秋田
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL163</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        31 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Monbetsu"
+                        data-en="Monbetsu"
+                        data-zh="Monbetsu">
+                        Monbetsu
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH375</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Indira Gandhi International"
+                        data-en="Indira Gandhi International"
+                        data-zh="Indira Gandhi International">
+                        Indira Gandhi International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH837</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:35</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="バンコク"
+                        data-en="Bangkok"
+                        data-zh="曼谷">
+                        バンコク
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/TG.png" alt="TG Logo" class="airline-logo">
+                            <span class="main-flight-number">TG683</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:40</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Washington Dulles International"
+                        data-en="Washington Dulles International"
+                        data-zh="Washington Dulles International">
+                        Washington Dulles International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH102</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:40</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="フランクフルト"
+                        data-en="Frankfurt"
+                        data-zh="法兰克福">
+                        フランクフルト
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH223</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:45</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Guangzhou Baiyun International"
+                        data-en="Guangzhou Baiyun International"
+                        data-zh="Guangzhou Baiyun International">
+                        Guangzhou Baiyun International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/CZ.png" alt="CZ Logo" class="airline-logo">
+                            <span class="main-flight-number">CZ3086</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:45</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Hirara"
+                        data-en="Hirara"
+                        data-zh="Hirara">
+                        Hirara
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL933</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        5A 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:45</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Franz Josef Strauss"
+                        data-en="Franz Josef Strauss"
+                        data-zh="Franz Josef Strauss">
+                        Franz Josef Strauss
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/LH.png" alt="LH Logo" class="airline-logo">
+                            <span class="main-flight-number">LH715</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Chicago O'hare International"
+                        data-en="Chicago O'hare International"
+                        data-zh="Chicago O'hare International">
+                        Chicago O'hare International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL10</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Misawa"
+                        data-en="Misawa"
+                        data-zh="Misawa">
+                        Misawa
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL155</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        12 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="George Bush Intercontinental"
+                        data-en="George Bush Intercontinental"
+                        data-zh="George Bush Intercontinental">
+                        George Bush Intercontinental
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH114</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:50</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="シンガポール"
+                        data-en="Singapore"
+                        data-zh="新加坡">
+                        シンガポール
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH841</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:55</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ダラス/フォートワース"
+                        data-en="Dallas(DFW)"
+                        data-zh="德岛">
+                        ダラス/フォートワース
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL12</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:55</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="シンガポール"
+                        data-en="Singapore"
+                        data-zh="新加坡">
+                        シンガポール
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL37</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">10:55</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL315</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        11 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:00</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Shenzhen"
+                        data-en="Shenzhen"
+                        data-zh="Shenzhen">
+                        Shenzhen
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH965</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Shimojishima"
+                        data-en="Shimojishima"
+                        data-zh="Shimojishima">
+                        Shimojishima
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/BC.png" alt="BC Logo" class="airline-logo">
+                            <span class="main-flight-number">BC613</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="ニューヨーク(JFK)"
+                        data-en="New York(JFK)"
+                        data-zh="纽约(JFK)">
+                        ニューヨーク(JFK)
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL6</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:05</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="バンコク"
+                        data-en="Bangkok"
+                        data-zh="曼谷">
+                        バンコク
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH847</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:15</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/BC.png" alt="BC Logo" class="airline-logo">
+                            <span class="main-flight-number">BC9</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:15</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Amami"
+                        data-en="Amami"
+                        data-zh="Amami">
+                        Amami
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL659</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        4 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Indira Gandhi International"
+                        data-en="Indira Gandhi International"
+                        data-zh="Indira Gandhi International">
+                        Indira Gandhi International
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/AI.png" alt="AI Logo" class="airline-logo">
+                            <span class="main-flight-number">AI357</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="バンコク"
+                        data-en="Bangkok"
+                        data-zh="曼谷">
+                        バンコク
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL31</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:25</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH471</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="Kumamoto"
+                        data-en="Kumamoto"
+                        data-zh="Kumamoto">
+                        Kumamoto
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL629</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        7 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="那覇"
+                        data-en="Naha"
+                        data-zh="那霸">
+                        那覇
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/JL.png" alt="JL Logo" class="airline-logo">
+                            <span class="main-flight-number">JL987</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                        14 
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td class="time-cell">11:30</td>
+                    <td class="changed-time-cell-empty">
+                        
+                    </td>
+                    <td class="destination-cell" 
+                        data-ja="福岡"
+                        data-en="Fukuoka"
+                        data-zh="福冈">
+                        福岡
+                    </td>
+                    <td class="flight-group-cell">
+                        <div class="main-flight-item">
+                            <img src="https://www.gstatic.com/flights/airline_logos/32px/NH.png" alt="NH Logo" class="airline-logo">
+                            <span class="main-flight-number">NH251</span>
+                        </div>
+                        
+                    </td>
+                    <td class="gate-cell">
+                         
+                    </td>
+                    <td class="remark-cell ">
+                        予定
+                    </td>
+                </tr>
+            
+        </tbody>
+    </table>
+</div>
 
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/adapters.py", line 644, in send
-    resp = conn.urlopen(
-           ^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
-    retries = retries.increment(
-              ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/util/retry.py", line 474, in increment
-    raise reraise(type(error), error, _stacktrace)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
-    raise value
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
-    response = self._make_request(
-               ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 536, in _make_request
-    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/urllib3/connectionpool.py", line 367, in _raise_timeout
-    raise ReadTimeoutError(
-urllib3.exceptions.ReadTimeoutError: HTTPConnectionPool(host='api.aviationstack.com', port=80): Read timed out. (read timeout=15)
+<script>
+    // 行き先を5秒ごとに日本語、英語、中国語で切り替えるJavaScript
+    const languages = ["ja", "en", "zh"];
+    let currentLangIndex = 0;
+    const cells = document.querySelectorAll(".destination-cell");
 
-During handling of the above exception, another exception occurred:
+    function updateLanguage() {
+        const currentLang = languages[currentLangIndex];
+        
+        cells.forEach(cell => {
+            const text = cell.getAttribute(`data-${currentLang}`);
+            if (text) {
+                cell.textContent = text;
+            }
+        });
+        
+        currentLangIndex = (currentLangIndex + 1) % languages.length;
+    }
 
-Traceback (most recent call last):
-  File "/home/runner/work/Haneda/Haneda/generate_flights.py", line 311, in fetch_and_generate_html
-    response = requests.get(BASE_URL + endpoint, params=params, timeout=15)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/api.py", line 73, in get
-    return request("get", url, params=params, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/api.py", line 59, in request
-    return session.request(method=method, url=url, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
-    resp = self.send(prep, **send_kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
-    r = adapter.send(request, **kwargs)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/requests/adapters.py", line 690, in send
-    raise ReadTimeout(e, request=request)
-requests.exceptions.ReadTimeout: HTTPConnectionPool(host='api.aviationstack.com', port=80): Read timed out. (read timeout=15)
-</pre>
+    updateLanguage(); 
+    setInterval(updateLanguage, 5000); 
+</script>
+
 </body>
 </html>
